@@ -1,0 +1,71 @@
+@model VeganPlanner.Models.Item
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>@Html.DisplayFor(model => model.Name)</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RecipeID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RecipeID)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ServingSize)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ServingSize) @Html.DisplayFor(model => model.ServingUnits)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserID)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CaloriesPerServing)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CaloriesPerServing)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProteinPerServing)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProteinPerServing)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPantryItem)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsPantryItem)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsGF)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsGF)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsRecipe)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsRecipe)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ItemID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

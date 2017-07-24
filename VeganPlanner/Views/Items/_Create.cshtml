@@ -1,0 +1,138 @@
+@using Microsoft.AspNetCore.Identity
+@using VeganPlanner.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@model VeganPlanner.Models.Item
+
+
+    <h2>Create Item Popup</h2>
+    @{
+        var user = await UserManager.GetUserAsync(User);
+        var userId = user?.Id;
+
+    }
+
+    <hr />
+    <div class="row">
+        <div class="col-md-6 form-horizontal">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="col-md-3 control-label"></label>
+                    <div class=" col-md-8">
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ServingSize" class="col-md-3 control-label"></label>
+                    <div class=" col-md-8">
+                        <input asp-for="ServingSize" class="form-control" />
+                        <span asp-validation-for="ServingSize" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ServingUnits" class="col-md-3 control-label"></label>
+                    <div class=" col-md-8">
+                        <input asp-for="ServingUnits" class="form-control" />
+                        <span asp-validation-for="ServingUnits" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Category" class="col-md-3 control-label"></label>
+                    <div class=" col-md-8">
+                        <select asp-for="Category" class="form-control" id="sel1">
+                            <option>Proteins</option>
+                            <option>Raw Proteins</option>
+                            <option>Veggies</option>
+                            <option>Fruits</option>
+                            <option>Sauces</option>
+                            <option>Canned Goods</option>
+                            <option>Grains/Flour</option>
+                            <option>Condiments</option>
+                            <option>Herbs & Spices</option>
+                            <option>Nuts & Oils</option>
+                            <option>Sweeteners</option>
+                        </select>
+                        <span asp-validation-for="Category" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CaloriesPerServing" class="col-md-3 control-label"></label>
+                    <div class="col-md-8">
+                        <input asp-for="CaloriesPerServing" class="form-control" />
+                        <span asp-validation-for="CaloriesPerServing" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ProteinPerServing" class="col-md-3 control-label"></label>
+                    <div class="col-md-8">
+                        <input asp-for="ProteinPerServing" class="form-control" />
+                        <span asp-validation-for="ProteinPerServing" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-md-8">
+                        <div class="checkbox">
+                            <input id="recipecheck" asp-for="IsRecipe" />
+                            <label asp-for="IsRecipe"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-md-8">
+                        <div class="checkbox">
+                            <input asp-for="IsPantryItem" />
+                            <label asp-for="IsPantryItem"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-md-8">
+                        <div class="checkbox">
+                            <input asp-for="IsGF" />
+                            <label asp-for="IsGF"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-8">
+                        <input type="hidden" asp-for="UserID" class="form-control" value="@userId" readonly />
+                        <span asp-validation-for="UserID" class="text-danger"></span>
+                    </div><!--Row-->
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                        <button type="submit" id="btnSave" class="btn btn-sm">Save</button>
+                    </div>
+                </div>
+
+            </form>
+        </div><!--Col-->
+
+    </div> <!--Row-->
+
+    <script>
+        var checkbox = document.getElementById('recipecheck');
+        var delivery_div = document.getElementById('recipeform');
+        var showHiddenDiv = function () {
+            if (checkbox.checked) {
+                delivery_div.style['display'] = 'inline';
+            } else {
+                delivery_div.style['display'] = 'none';
+            }
+        }
+        checkbox.onclick = showHiddenDiv;
+        showHiddenDiv();
+    </script>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+    
+        
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

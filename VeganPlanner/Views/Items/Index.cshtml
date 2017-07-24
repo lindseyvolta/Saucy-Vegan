@@ -1,0 +1,118 @@
+@model VeganPlanner.Models.ItemCategoryViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<h2>Food Items</h2>
+<p class="lead">A compilation of all the ingredients and recipes to use in your Saucy Vegan meals!</p>
+
+<form asp-controller="Items" asp-action="Index" method="get">
+    <p class="my-3">
+        <input style="float:left" class="form-control" type="text" name="SearchString" placeholder="Search for...">
+        <input class="btn btn-default" type="submit" value="Go!" />
+
+        <select style="float: left; height:33px; padding: 2px 4px; border-radius: 3px 3px 3px 3px; border-color: lightgrey" asp-for="itemCategory" asp-items="Model.categories">
+            <option value="">All</option>
+        </select>
+    </p>
+</form>
+
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.items[0].Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.items[0].Category)
+                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.items[0].IsRecipe)
+            </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.items[0].IsPantryItem)
+                </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.items) {
+
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsRecipe)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPantryItem)
+            </td>
+            <td>
+                <a style="padding-right: 10px; text-decoration: none; color: grey;" class="glyphicon glyphicon-edit" asp-action="Edit" asp-route-id="@item.ItemID">  </a>       
+                <a style="padding-right: 10px; text-decoration: none; color: grey;" class="glyphicon glyphicon-eye-open" asp-action="Details" asp-route-id="@item.ItemID">  </a>       
+                <a style="text-decoration: none; color: grey;" class="glyphicon glyphicon-remove" asp-action="Delete" asp-route-id="@item.ItemID"></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+@Html.ActionLink("Create Item", "Create", "Items",
+null, new { @class = "modal-link btn btn-success" })
+
+
+
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-content" style="width:500px !important; margin: 10px auto !important;">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Create New Item</h4>
+        </div>
+        <div class="modal-body">
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        // Initialize numeric spinner input boxes
+        //$(".numeric-spinner").spinedit();
+        // Initialize modal dialog
+        // attach modal-container bootstrap attributes to links with .modal-link class.
+        // when a link is clicked with these attributes, bootstrap will display the href content in a modal dialog.
+        $('body').on('click', '.modal-link', function (e) {
+            e.preventDefault();
+            $(this).attr('data-target', '.modal-body');
+            $(this).attr('data-toggle', 'modal');
+        });
+        // Attach listener to .modal-close-btn's so that when the button is pressed the modal dialog disappears
+        $('body').on('click', '.modal-close-btn', function () {
+            $('#modal-container').modal('hide');
+        });
+        //clear modal cache, so that new content can be loaded
+        $('#modal-container').on('hidden.bs.modal', function () {
+            $(this).removeData('bs.modal');
+        });
+        $('#CancelModal').on('click', function () {
+            return false;
+        });
+    });
+</script>

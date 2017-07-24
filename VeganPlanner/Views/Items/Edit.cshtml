@@ -1,0 +1,106 @@
+@model VeganPlanner.Models.Item
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit Item</h2>
+
+<form asp-action="Edit">
+    <div class="form-horizontal">
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ItemID" />
+        <div class="form-group">
+            <label asp-for="Name" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ServingSize" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ServingSize" class="form-control" />
+                <span asp-validation-for="ServingSize" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ServingUnits" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ServingUnits" class="form-control" />
+                <span asp-validation-for="ServingUnits" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Category" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Category" class="form-control" id="sel1">
+                    <option>Proteins</option>
+                    <option>Raw Proteins</option>
+                    <option>Veggies</option>
+                    <option>Fruits</option>
+                    <option>Sauces</option>
+                    <option>Canned Goods</option>
+                    <option>Grains/Flour</option>
+                    <option>Condiments</option>
+                    <option>Herbs & Spices</option>
+                    <option>Nuts & Oils</option>
+                    <option>Sweeteners</option>
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="CaloriesPerServing" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="CaloriesPerServing" class="form-control" />
+                <span asp-validation-for="CaloriesPerServing" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ProteinPerServing" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ProteinPerServing" class="form-control" />
+                <span asp-validation-for="ProteinPerServing" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="IsRecipe" />
+                    <label asp-for="IsRecipe"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="IsPantryItem" />
+                    <label asp-for="IsPantryItem"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="IsGF" />
+                    <label asp-for="IsGF"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
