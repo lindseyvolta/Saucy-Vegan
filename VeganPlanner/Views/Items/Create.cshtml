@@ -6,7 +6,7 @@
 @model VeganPlanner.Models.Item
 
 
-    <h2>Create Item Popup</h2>
+    <h2>Create Item</h2>
     @{
         var user = await UserManager.GetUserAsync(User);
         var userId = user?.Id;
@@ -48,6 +48,7 @@
                             <option>Veggies</option>
                             <option>Fruits</option>
                             <option>Sauces</option>
+                            <option>Milks/Creamers</option>
                             <option>Canned Goods</option>
                             <option>Grains/Flour</option>
                             <option>Condiments</option>

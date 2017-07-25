@@ -10,7 +10,7 @@ namespace VeganPlanner.Models
         [Required]
         public int Servings { get; set; }
 
-        ICollection<Ingredient> Ingredients { get; set; }
-        ICollection<Step> Instructions { get; set; }
+        public ICollection<Ingredient> Ingredients { get; set; }
+        public ICollection<Step> Instructions { get; set; }
     }
 }

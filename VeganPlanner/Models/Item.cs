@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace VeganPlanner.Models
 {
@@ -27,6 +23,7 @@ namespace VeganPlanner.Models
         [Display(Name = "GF")]
         public bool IsGF { get; set; }
 
+        [DisplayFormat(NullDisplayText = "Not a Recipe")]
         public int? RecipeID { get; set; }
         public Recipe recipe { get; set; }
     }

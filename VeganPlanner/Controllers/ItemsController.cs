@@ -56,7 +56,14 @@ namespace VeganPlanner.Controllers
             }
 
             var item = await _context.Item
-                .SingleOrDefaultAsync(m => m.ItemID == id);
+           .Include(c => c.recipe)
+               .ThenInclude(c => c.Ingredients)
+               .ThenInclude(c => c.item)
+           .Include(c => c.recipe)
+               .ThenInclude(c => c.Instructions)
+           .AsNoTracking()
+           .SingleOrDefaultAsync(m => m.ItemID == id);
+
             if (item == null)
             {
                 return NotFound();
@@ -68,7 +75,7 @@ namespace VeganPlanner.Controllers
         // GET: Items/Create
         public IActionResult Create()
         {
-            return PartialView("_Create");
+            return View();
         }
 
         // POST: Items/Create
@@ -151,7 +158,13 @@ namespace VeganPlanner.Controllers
             }
 
             var item = await _context.Item
+                .Include(c => c.recipe)
+                    .ThenInclude(c => c.Ingredients)
+                .Include(c => c.recipe)
+                    .ThenInclude(c => c.Instructions)
+                .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ItemID == id);
+
             if (item == null)
             {
                 return NotFound();
@@ -166,6 +179,11 @@ namespace VeganPlanner.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var item = await _context.Item.SingleOrDefaultAsync(m => m.ItemID == id);
+           /* var recipe = await _context.Recipe.SingleOrDefaultAsync(m => m.RecipeID == item.RecipeID);
+            if (recipe != null)
+            {
+                _context.Recipe.Remove(recipe);
+            }*/
             _context.Item.Remove(item);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

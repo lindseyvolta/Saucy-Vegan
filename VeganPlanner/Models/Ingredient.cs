@@ -8,7 +8,9 @@ namespace VeganPlanner.Models
     public class Ingredient
     {
         public int IngredientID { get; set; }
+        public Item item { get; set; }
 		public int ItemID { get; set; }
+        public int RecipeID { get; set; }
 		public decimal Quantity { get; set; }
 		public string Units { get; set; }
 
