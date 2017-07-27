@@ -75,7 +75,21 @@ namespace VeganPlanner.Controllers
         // GET: Items/Create
         public IActionResult Create()
         {
+            PopulateItemsDropDownList();
             return View();
+        }
+
+        private void PopulateItemsDropDownList(object selectedItem = null)
+        {
+            var itemsQuery = from i in _context.Item
+                             where i.IsRecipe == false
+                             orderby i.Name
+                             select i;
+            if(ViewBag.recipe != null)
+            {
+                ViewBag.recipe.Ingredient.ItemID = new SelectList(itemsQuery.AsNoTracking(), "ItemID", "Name", selectedItem);
+
+            }
         }
 
         // POST: Items/Create

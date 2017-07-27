@@ -114,26 +114,80 @@
 
     </div> <!--Row-->
 
-    <script>
-        var checkbox = document.getElementById('recipecheck');
-        var delivery_div = document.getElementById('recipeform');
-        var showHiddenDiv = function () {
-            if (checkbox.checked) {
-                delivery_div.style['display'] = 'inline';
-            } else {
-                delivery_div.style['display'] = 'none';
-            }
-        }
-        checkbox.onclick = showHiddenDiv;
-        showHiddenDiv();
-    </script>
+<hr />
 
-    <div>
-        <a asp-action="Index">Back to List</a>
+<div class="container">
+    <div class="row" id="recipeform">
+        <p class="lead">Recipe Details: </p>
+        <div class="form-group">
+            <label asp-for="recipe.Notes" class="control-label">Notes</label>
+            <div class="">
+                <input asp-for="recipe.Notes" class="form-control input-group-lg" />
+                <span asp-validation-for="recipe.Notes" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="recipe.Servings" class="control-label">Servings</label>
+            <div class="">
+                <input asp-for="recipe.Servings" class="form-control input-group-lg" />
+                <span asp-validation-for="recipe.Servings" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-md-8 column">
+                <table class="table table-bordered" id="ingredient-table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">
+                                Ingredient
+                            </th>
+                            <th class="text-center">
+                                Quantity
+                            </th>
+                            <th class="text-center">
+                                Units
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select class="form-control"></select>                               
+                            </td>
+                            <td>
+                               
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <a id="add_row" class="btn btn-default pull-left">Add Row</a><a id='delete_row' class="pull-right btn btn-default">Delete Row</a>
     </div>
-    
-        
+</div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+            <script>
+                var checkbox = document.getElementById('recipecheck');
+                var delivery_div = document.getElementById('recipeform');
+                var showHiddenDiv = function () {
+                    if (checkbox.checked) {
+                        delivery_div.style['display'] = 'inline';
+                    } else {
+                        delivery_div.style['display'] = 'none';
+                    }
+                }
+                checkbox.onclick = showHiddenDiv;
+                showHiddenDiv();
+            </script>
+
+            <div>
+                <a asp-action="Index">Back to List</a>
+            </div>
+
+
+
+            @section Scripts {
+                @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+            }
