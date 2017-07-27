@@ -12,6 +12,7 @@
     <UserSecretsId>aspnet-VeganPlanner-7ffde2d3-8923-4260-885a-bfe154d65593</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="BeginCollectionItemCore" Version="1.0.8" />
     <PackageReference Include="bootstrap" Version="3.3.7" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />

@@ -85,11 +85,8 @@ namespace VeganPlanner.Controllers
                              where i.IsRecipe == false
                              orderby i.Name
                              select i;
-            if(ViewBag.recipe != null)
-            {
-                ViewBag.recipe.Ingredient.ItemID = new SelectList(itemsQuery.AsNoTracking(), "ItemID", "Name", selectedItem);
 
-            }
+            ViewData["itemList"] = new SelectList(itemsQuery.AsNoTracking(), "ItemID", "Name", selectedItem);
         }
 
         // POST: Items/Create
@@ -97,12 +94,37 @@ namespace VeganPlanner.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ItemID,Name,IsRecipe,ServingSize,ServingUnits,Category,UserID,CaloriesPerServing,ProteinPerServing,IsPantryItem,IsGF")] Item item)
+        public async Task<IActionResult> Create([Bind("ItemID,Name,IsRecipe,ServingSize,ServingUnits,Category,UserID,CaloriesPerServing,ProteinPerServing,IsPantryItem,IsGF,RecipeID,recipe")] Item item)
         {
             if (!item.IsRecipe)
             {
                 item.RecipeID = null;
             }
+            else
+            {
+                //add recipe to database and store corresponding recipe ID in item object
+                _context.Recipe.Add(item.recipe);
+                await _context.SaveChangesAsync();
+                item.RecipeID = item.recipe.RecipeID;
+
+                //adding ingredients to database
+                foreach(var i in item.recipe.Ingredients)
+                {
+                    i.RecipeID = item.recipe.RecipeID;
+                    _context.Ingredient.Add(i);
+                }
+                await _context.SaveChangesAsync();
+
+                //adding instructions to database
+                foreach (var i in item.recipe.Instructions)
+                {
+                    i.RecipeID = item.recipe.RecipeID;
+                    _context.Step.Add(i);
+                }
+                await _context.SaveChangesAsync();
+
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(item);
@@ -133,7 +155,7 @@ namespace VeganPlanner.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,IsRecipe,RecipeID,RecipeServings,ServingSize,ServingUnits,Category,UserID,CaloriesPerServing,ProteinPerServing,IsPantryItem,IsGF")] Item item)
+        public async Task<IActionResult> Edit(int id, [Bind("ItemID,Name,IsRecipe,ServingSize,ServingUnits,Category,UserID,CaloriesPerServing,ProteinPerServing,IsPantryItem,IsGF,RecipeID,recipe")] Item item)
         {
             if (id != item.ItemID)
             {

@@ -15,7 +15,7 @@
 
     <hr />
     <div class="row">
-        <div class="col-md-6 form-horizontal">
+        <div class="col-md-8 form-horizontal">
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
@@ -43,8 +43,8 @@
                     <label asp-for="Category" class="col-md-3 control-label"></label>
                     <div class=" col-md-8">
                         <select asp-for="Category" class="form-control" id="sel1">
-                            <option>Proteins</option>
-                            <option>Raw Proteins</option>
+                            <option>Protein</option>
+                            <option>Raw Protein</option>
                             <option>Veggies</option>
                             <option>Fruits</option>
                             <option>Sauces</option>
@@ -103,9 +103,70 @@
                         <span asp-validation-for="UserID" class="text-danger"></span>
                     </div><!--Row-->
                 </div>
+
+                <hr />
+
+                <div class="container" id="recipeform">
+                        <p class="lead">Recipe Details: </p>
+                        <div class="form-group">
+                            <label asp-for="recipe.Notes" class="col-md-3 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="recipe.Notes" class="form-control input-group-lg" />
+                                <span asp-validation-for="recipe.Notes" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="recipe.Servings" class="col-md-3 control-label"></label>
+                            <div class="col-md-8">
+                                <input asp-for="recipe.Servings" class="form-control input-group-lg" />
+                                <span asp-validation-for="recipe.Servings" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="column">
+                                <table class="table table-bordered" id="ingredient-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                Ingredient
+                                            </th>
+                                            <th class="text-center">
+                                                Quantity
+                                            </th>
+                                            <th class="text-center">
+                                                Units
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                @Html.DropDownListFor(m => m.recipe.Ingredients, (SelectList)ViewBag.itemList, new { @class = "form-control" })
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input asp-for="recipe.Ingredients.First().Quantity" class="form-control" />
+                                                    <span asp-validation-for="recipe.Ingredients.First().Quantity" class="text-danger"></span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input asp-for="recipe.Ingredients.First().Units" class="form-control"/>
+                                                    <span asp-validation-for="recipe.Ingredients.First().Units" class="text-danger"></span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <a id="add_row" class="btn btn-default pull-right">Add Ingredient</a>
+                    </div>
+
                 <div class="form-group">
-                    <div class="col-md-offset-2 col-md-8">
-                        <button type="submit" id="btnSave" class="btn btn-sm">Save</button>
+                    <div class="col-md-8">
+                        <button type="submit" id="btnSave" class="btn btn-sm btn-success">Save</button>
                     </div>
                 </div>
 
@@ -114,59 +175,8 @@
 
     </div> <!--Row-->
 
-<hr />
 
-<div class="container">
-    <div class="row" id="recipeform">
-        <p class="lead">Recipe Details: </p>
-        <div class="form-group">
-            <label asp-for="recipe.Notes" class="control-label">Notes</label>
-            <div class="">
-                <input asp-for="recipe.Notes" class="form-control input-group-lg" />
-                <span asp-validation-for="recipe.Notes" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="recipe.Servings" class="control-label">Servings</label>
-            <div class="">
-                <input asp-for="recipe.Servings" class="form-control input-group-lg" />
-                <span asp-validation-for="recipe.Servings" class="text-danger"></span>
-            </div>
-        </div>
 
-        <div class="row clearfix">
-            <div class="col-md-8 column">
-                <table class="table table-bordered" id="ingredient-table">
-                    <thead>
-                        <tr>
-                            <th class="text-center">
-                                Ingredient
-                            </th>
-                            <th class="text-center">
-                                Quantity
-                            </th>
-                            <th class="text-center">
-                                Units
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <select class="form-control"></select>                               
-                            </td>
-                            <td>
-                               
-                            </td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <a id="add_row" class="btn btn-default pull-left">Add Row</a><a id='delete_row' class="pull-right btn btn-default">Delete Row</a>
-    </div>
-</div>
 
             <script>
                 var checkbox = document.getElementById('recipecheck');

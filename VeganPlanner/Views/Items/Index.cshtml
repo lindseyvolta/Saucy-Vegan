@@ -60,9 +60,9 @@
                 @Html.DisplayFor(modelItem => item.IsPantryItem)
             </td>
             <td>
-                <a style="padding-right: 10px; text-decoration: none; color: grey;" class="glyphicon glyphicon-edit" asp-action="Edit" asp-route-id="@item.ItemID">  </a>       
-                <a style="padding-right: 10px; text-decoration: none; color: grey;" class="glyphicon glyphicon-eye-open" asp-action="Details" asp-route-id="@item.ItemID">  </a>       
-                <a style="text-decoration: none; color: grey;" class="glyphicon glyphicon-remove" asp-action="Delete" asp-route-id="@item.ItemID"></a>
+                <a style="color: grey;" class="" asp-action="Edit" asp-route-id="@item.ItemID">Edit</a> |        
+                <a style="color: grey;" class="" asp-action="Details" asp-route-id="@item.ItemID">View</a> | 
+                <a style="color: grey;" class="" asp-action="Delete" asp-route-id="@item.ItemID"> Delete</a>
             </td>
         </tr>
 }

@@ -5,6 +5,7 @@ namespace VeganPlanner.Models
     public class Item
     {
         public int ItemID { get; set; }
+        [Required]
         public string Name { get; set; }
         [Display(Name = "Is a Recipe")]
         public bool IsRecipe { get; set; }
