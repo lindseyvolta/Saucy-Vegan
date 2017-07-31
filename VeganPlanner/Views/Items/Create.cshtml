@@ -5,6 +5,11 @@
 @inject UserManager<ApplicationUser> UserManager
 @model VeganPlanner.Models.Item
 
+<head>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js"></script>
+   
+
+</head>
 
     <h2>Create Item</h2>
     @{
@@ -15,7 +20,7 @@
 
     <hr />
     <div class="row">
-        <div class="col-md-8 form-horizontal">
+        <div class="col-md-10 form-horizontal">
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
@@ -123,9 +128,15 @@
                             </div>
                         </div>
 
-                        <div class="row clearfix">
+                  <div id="new-ingredient">
+                     @{ await Html.RenderPartialAsync("IngredientPartial"); }
+
+                  </div>
+                    <input type="button" id="addingredient" name="addingredient" value="Add Ingredient" />
+
+                        @*<div class="row clearfix">
                             <div class="column">
-                                <table class="table table-bordered" id="ingredient-table">
+                                <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th class="text-center">
@@ -139,29 +150,18 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="new-ingredient">
+                                  
                                         <tr>
-                                            <td>
-                                                @Html.DropDownListFor(m => m.recipe.Ingredients, (SelectList)ViewBag.itemList, new { @class = "form-control" })
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <input asp-for="recipe.Ingredients.First().Quantity" class="form-control" />
-                                                    <span asp-validation-for="recipe.Ingredients.First().Quantity" class="text-danger"></span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <input asp-for="recipe.Ingredients.First().Units" class="form-control"/>
-                                                    <span asp-validation-for="recipe.Ingredients.First().Units" class="text-danger"></span>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                            @Html.DropDownListFor(m => m.recipe.Ingredients, (SelectList)ViewBag.itemList, new { @class = "form-control" })
+
+                                            
+                                        </tr> 
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
-                        <a id="add_row" class="btn btn-default pull-right">Add Ingredient</a>
+                        </div>*@
+                    
                     </div>
 
                 <div class="form-group">
@@ -175,22 +175,22 @@
 
     </div> <!--Row-->
 
-
-
-
-            <script>
-                var checkbox = document.getElementById('recipecheck');
-                var delivery_div = document.getElementById('recipeform');
-                var showHiddenDiv = function () {
-                    if (checkbox.checked) {
-                        delivery_div.style['display'] = 'inline';
-                    } else {
-                        delivery_div.style['display'] = 'none';
+         
+                <script>
+                    var checkbox = document.getElementById('recipecheck');
+                    var delivery_div = document.getElementById('recipeform');
+                    var showHiddenDiv = function () {
+                        if (checkbox.checked) {
+                            delivery_div.style['display'] = 'inline';
+                        } else {
+                            delivery_div.style['display'] = 'none';
+                        }
                     }
-                }
-                checkbox.onclick = showHiddenDiv;
-                showHiddenDiv();
-            </script>
+                    checkbox.onclick = showHiddenDiv;
+                    showHiddenDiv();
+
+                 
+               </script>
 
             <div>
                 <a asp-action="Index">Back to List</a>
@@ -200,4 +200,15 @@
 
             @section Scripts {
                 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+                <script type="text/javascript">
+                                     $('#addingredient').on('click', function () {
+                                         $.ajax({
+                                             async: false,
+                                             url: 'ItemsController/AddNewIngredient'
+                                         }).success(function (partialView) {
+                                             $('#new-ingredient').append(partialView);
+                                         });
+                                     });
+                </script>
             }

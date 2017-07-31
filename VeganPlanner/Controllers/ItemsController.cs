@@ -72,11 +72,17 @@ namespace VeganPlanner.Controllers
             return View(item);
         }
 
+        
         // GET: Items/Create
         public IActionResult Create()
         {
             PopulateItemsDropDownList();
             return View();
+        }
+
+        public ActionResult AddNewIngredient()
+        {
+            return PartialView("IngredientPartial", new Ingredient());
         }
 
         private void PopulateItemsDropDownList(object selectedItem = null)
@@ -214,12 +220,12 @@ namespace VeganPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var item = await _context.Item.SingleOrDefaultAsync(m => m.ItemID == id);
-           /* var recipe = await _context.Recipe.SingleOrDefaultAsync(m => m.RecipeID == item.RecipeID);
-            if (recipe != null)
-            {
-                _context.Recipe.Remove(recipe);
-            }*/
+            var item = await _context.Item
+                .Include(m => m.recipe)
+                .AsNoTracking()
+                .SingleAsync(m => m.ItemID == id);
+           
+
             _context.Item.Remove(item);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
