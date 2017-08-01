@@ -4,7 +4,7 @@
 @using (Html.BeginCollectionItem("Ingredients"))
 {
     <div id="ingredientRow" class="ingredientRow">
-        @Html.DropDownListFor(m => m.item, (SelectList)ViewBag.itemList)   
+        @Html.DropDownListFor(m => m.ItemID, (IEnumerable<SelectListItem>)ViewBag.itemList)
         @Html.EditorFor(m => m.Quantity)
         @Html.EditorFor(m => m.Units)
         <a id="deleteRow" class="deleteRow">Delete</a>

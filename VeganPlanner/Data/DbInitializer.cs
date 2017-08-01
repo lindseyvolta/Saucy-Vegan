@@ -29,7 +29,7 @@ namespace VeganPlanner.Data
                          RecipeID = recipes.Single(r => r.Notes == "Easy, protein-packed pizza crust!").RecipeID,
                          recipe = recipes.Single(r => r.Notes == "Easy, protein-packed pizza crust!"),
                          ServingSize = 1,
-                         ServingUnits = "crust",
+                         ServingUnits = "Crust",
                          Category = "Protein",
                          UserID = "cd06a955-3bea-4eef-8ecf-41feeaaf9b4f",
                          CaloriesPerServing = 100,
@@ -40,7 +40,7 @@ namespace VeganPlanner.Data
                 new Item {Name = "Red Lentils",
                     IsRecipe = false,
                     ServingSize = 0.5M,
-                    ServingUnits = "cups",
+                    ServingUnits = "Cup",
                     Category = "Raw Protein",
                     UserID = "cd06a955-3bea-4eef-8ecf-41feeaaf9b4f",
                     CaloriesPerServing = 20,
@@ -51,7 +51,7 @@ namespace VeganPlanner.Data
                 new Item {Name = "Rice Milk",
                     IsRecipe = false,
                     ServingSize = 1,
-                    ServingUnits = "cups",
+                    ServingUnits = "Cup",
                     Category = "Milks/Creamers",
                     UserID = "cd06a955-3bea-4eef-8ecf-41feeaaf9b4f",
                     CaloriesPerServing = 10,
@@ -73,13 +73,13 @@ namespace VeganPlanner.Data
                     item = items.Single(i => i.Name == "Red Lentils"),
                     RecipeID = recipes.Single(r => r.Notes == "Easy, protein-packed pizza crust!").RecipeID,
                     Quantity = 2,
-                    Units = "cups"
+                    Units = "Cup"
                 },
                 new Ingredient{ItemID = items.Single(i => i.Name == "Rice Milk").ItemID,
                     item = items.Single(i => i.Name == "Rice Milk"),
                     RecipeID = recipes.Single(r => r.Notes == "Easy, protein-packed pizza crust!").RecipeID,
                     Quantity = 2.5M,
-                    Units = "cups"
+                    Units = "Cup"
                 }
              };
 

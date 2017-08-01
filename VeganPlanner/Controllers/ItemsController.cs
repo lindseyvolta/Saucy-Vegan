@@ -92,7 +92,7 @@ namespace VeganPlanner.Controllers
                              orderby i.Name
                              select i;
 
-            ViewData["itemList"] = new SelectList(itemsQuery.AsNoTracking(), "ItemID", "Name", selectedItem);
+            ViewBag.itemList = new SelectList(itemsQuery.AsNoTracking(), "ItemID", "Name", selectedItem);
         }
 
         // POST: Items/Create
@@ -148,11 +148,19 @@ namespace VeganPlanner.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Item.SingleOrDefaultAsync(m => m.ItemID == id);
+            var item = await _context.Item
+                .Include(c => c.recipe)
+                    .ThenInclude(c => c.Ingredients)
+                    .ThenInclude(c => c.item)
+                .Include(c => c.recipe)
+                    .ThenInclude(c => c.Instructions)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ItemID == id);
             if (item == null)
             {
                 return NotFound();
             }
+            PopulateItemsDropDownList();
             return View(item);
         }
 
@@ -161,13 +169,45 @@ namespace VeganPlanner.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ItemID,Name,IsRecipe,ServingSize,ServingUnits,Category,UserID,CaloriesPerServing,ProteinPerServing,IsPantryItem,IsGF,RecipeID,recipe")] Item item)
+        public async Task<IActionResult> Edit(int? id, int? dummy)
         {
-            if (id != item.ItemID)
+            //, [Bind("ItemID,Name,IsRecipe,ServingSize,ServingUnits,Category,UserID,CaloriesPerServing,ProteinPerServing,IsPantryItem,IsGF,RecipeID,recipe")] Item item
+            if (id == null)
             {
                 return NotFound();
             }
 
+            var item = _context.Item
+                 .Include(c => c.recipe)
+                     .ThenInclude(c => c.Ingredients)
+                     .ThenInclude(c => c.item)
+                 .Include(c => c.recipe)
+                     .ThenInclude(c => c.Instructions)
+                 .Where(c => c.ItemID == id)
+                 .Single();
+
+
+           if(await TryUpdateModelAsync(item))
+            {
+                try
+                {
+                    if (item.IsRecipe == false)
+                    {
+                        item.recipe = null;
+                    }
+                    _context.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again");
+                }
+                
+            }
+
+            return View(item);
+
+            /*
             if (ModelState.IsValid)
             {
                 try
@@ -188,7 +228,7 @@ namespace VeganPlanner.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(item);
+            return View(item);*/
         }
 
         // GET: Items/Delete/5
@@ -220,13 +260,23 @@ namespace VeganPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var item = await _context.Item
+            Item item = _context.Item
                 .Include(m => m.recipe)
-                .AsNoTracking()
-                .SingleAsync(m => m.ItemID == id);
-           
+                .Where(m => m.ItemID == id)
+                .Single();
+
+            if (item.IsRecipe)
+            {
+                Recipe recipe = _context.Recipe
+                        .Where(m => m.RecipeID == item.RecipeID)
+                        .Single();
+                _context.Recipe.Remove(recipe);
+            }
+            
 
             _context.Item.Remove(item);
+           
+
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }

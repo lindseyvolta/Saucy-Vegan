@@ -40,7 +40,13 @@
                 <div class="form-group">
                     <label asp-for="ServingUnits" class="col-md-3 control-label"></label>
                     <div class=" col-md-8">
-                        <input asp-for="ServingUnits" class="form-control" />
+                        <select asp-for="ServingUnits" class="form-control" id="sel1">
+                            <option>Cup</option>
+                            <option>Tbsp</option>
+                            <option>tsp</option>
+                            <option>oz</option>
+                            <option>g</option>
+                        </select>
                         <span asp-validation-for="ServingUnits" class="text-danger"></span>
                     </div>
                 </div>
