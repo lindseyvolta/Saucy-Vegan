@@ -19,7 +19,12 @@ namespace VeganPlanner.Controllers
         }
 
         // Requires using Microsoft.AspNetCore.Mvc.Rendering;
-        public async Task<IActionResult> Index(string itemCategory, string searchString)
+        public ActionResult Index()
+        {
+            return View("Index");
+        }
+
+        public async Task<IActionResult> GetItems(string searchString, string itemCategory)
         {
             // Use LINQ to get list of genres.
             IQueryable<string> categoryQuery = from m in _context.Item
@@ -30,20 +35,12 @@ namespace VeganPlanner.Controllers
                          select m;
 
             if (!String.IsNullOrEmpty(searchString))
-            {
                 items = items.Where(s => s.Name.Contains(searchString));
-            }
 
             if (!String.IsNullOrEmpty(itemCategory))
-            {
                 items = items.Where(x => x.Category == itemCategory);
-            }
 
-            var itemCategoryVM = new ItemCategoryViewModel();
-            itemCategoryVM.categories = new SelectList(await categoryQuery.Distinct().ToListAsync());
-            itemCategoryVM.items = await items.ToListAsync();
-
-            return View(itemCategoryVM);
+            return Json(new { items = await items.ToListAsync() });
         }
 
 
