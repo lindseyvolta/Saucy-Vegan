@@ -8,7 +8,7 @@
     <p class="lead">A compilation of all the ingredients and recipes to use in your Saucy Vegan meals!</p>
     <p class="my-3">
         <input style="float:left" class="form-control" type="text" data-bind="textInput: SearchString" placeholder="Search for...">
-        <input class="btn btn-default" data-bind="click: populateData" value="Go!" />
+        <input class="btn btn-default" data-bind="click: function () { populateData(); }" value="Go!" />
 
         <select style="float: left; height:35px; padding: 2px 4px; border-radius: 3px 3px 3px 3px; border-color: lightgrey">
             <option value="">All</option>
