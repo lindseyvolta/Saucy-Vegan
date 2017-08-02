@@ -11,6 +11,10 @@
   <PropertyGroup>
     <UserSecretsId>aspnet-VeganPlanner-7ffde2d3-8923-4260-885a-bfe154d65593</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\js\FoodItemsHandlerVM.js" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BeginCollectionItemCore" Version="1.0.8" />
     <PackageReference Include="bootstrap" Version="3.3.7" />
