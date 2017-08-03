@@ -7,11 +7,8 @@ namespace VeganPlanner.Models
         public int ItemID { get; set; }
         [Required]
         public string Name { get; set; }
-        [Display(Name = "Is a Recipe")]
         public bool IsRecipe { get; set; }
-        [Display(Name = "Serving Size")]
         public decimal ServingSize { get; set; }
-        [Display(Name = "Serving Units")]
         public string ServingUnits { get; set; }
         public string Category { get; set; }
         public string UserID { get; set; }

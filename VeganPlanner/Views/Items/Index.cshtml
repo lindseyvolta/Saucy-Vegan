@@ -33,10 +33,29 @@
                 <td><input type="checkbox" data-bind="checked: isPantryItem" /></td>
                 <td>
                     <a style="color: grey;" class="">Edit</a> |
-                    <a style="color: grey;" class="">View</a> |
+                    <a style="color: grey;" data-bind="click: function() { $root.showDetails($data); }" class="">View</a> |
                     <a style="color: grey;" class=""> Delete</a>
                 </td>
             </tr>
         </tbody>
     </table>
+
+    <div id="details-modal" class="modal" tabindex="-1" role="dialog" data-bind="with: DetailItem">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <h2 data-bind="text: name" class="text-center"></h2>
+                <hr/>
+                <dl class="dl-horizontal">
+                    <dt>Category</dt>
+                    <dd><div data-bind="text: category"></div></dd>
+                    <dt>Is Recipe</dt>
+                    <dd><input type="checkbox" data-bind="checked: isRecipe" /></dd>
+                    <dt>Is Pantry Item</dt>
+                    <dd><input type="checkbox" data-bind="checked: isPantryItem" /></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
 </div>
+
