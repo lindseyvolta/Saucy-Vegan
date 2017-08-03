@@ -8,6 +8,8 @@
         self.SearchString = ko.observable();
         self.Items = ko.observableArray();
 
+        self.CurrentItemBeingEdited = ko.observable();
+
         self.populateData = function (element) {
             $.ajax({
                 type: "GET",
@@ -20,6 +22,12 @@
                         ko.applyBindings(self, element);
                 }
             });  
+        }
+
+        self.editItem = function (item) {
+            self.CurrentItemBeingEdited(item);
+
+            $("#ItemEditDialog").modal("show");
         }
     }
 

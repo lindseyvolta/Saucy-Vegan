@@ -32,11 +32,19 @@
                 <td><input type="checkbox" data-bind="checked: isRecipe" /></td>
                 <td><input type="checkbox" data-bind="checked: isPantryItem" /></td>
                 <td>
-                    <a style="color: grey;" class="">Edit</a> |
+                    <a style="color: grey;" class="" data-bind="click: function () { $root.editItem($data); }">Edit</a> |
                     <a style="color: grey;" class="">View</a> |
                     <a style="color: grey;" class=""> Delete</a>
                 </td>
             </tr>
         </tbody>
     </table>
+
+    <div class="modal" id="ItemEditDialog" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" data-bind="with: CurrentItemBeingEdited">
+        <div class="modal-dialog">
+            <div class="modal-content" >
+                <div data-bind="text: name"></div>
+            </div>
+        </div>
+    </div>
 </div>
