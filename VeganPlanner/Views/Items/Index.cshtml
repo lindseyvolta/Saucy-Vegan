@@ -29,10 +29,10 @@
             <tr>
                 <td data-bind="text: name"></td>
                 <td data-bind="text: category"></td>
-                <td><input type="checkbox" data-bind="checked: isRecipe" /></td>
-                <td><input type="checkbox" data-bind="checked: isPantryItem" /></td>
+                <td><input type="checkbox" data-bind="checked: isRecipe" disabled /></td>
+                <td><input type="checkbox" data-bind="checked: isPantryItem" disabled /></td>
                 <td>
-                    <a style="color: grey;" class="">Edit</a> |
+                    <a style="color: grey;" data-bind="click: function() { $root.showEdit($data); }" class="">Edit</a> |
                     <a style="color: grey;" data-bind="click: function() { $root.showDetails($data); }" class="">View</a> |
                     <a style="color: grey;" class=""> Delete</a>
                 </td>
@@ -40,22 +40,110 @@
         </tbody>
     </table>
 
-    <div id="details-modal" class="modal" tabindex="-1" role="dialog" data-bind="with: DetailItem">
+    <div id="details-modal" class="modal fade" tabindex="-1" role="dialog" data-bind="with: DetailItem">
         <div class="modal-dialog">
             <div class="modal-content">
                 <h2 data-bind="text: name" class="text-center"></h2>
-                <hr/>
-                <dl class="dl-horizontal">
+                <hr />
+                <dl class="dl-horizontal col-sm-offset-1">
                     <dt>Category</dt>
-                    <dd><div data-bind="text: category"></div></dd>
+                    <dd data-bind="text: category"></dd>
+                    <dt>Serving Size</dt>
+                    <dd data-bind="text: servingSize() + ' ' + servingUnits()"></dd>
+                    <dt>User ID</dt>
+                    <dd data-bind="text: userID"></dd>
+                    <dt>Item ID</dt>
+                    <dd data-bind="text: itemID"></dd>
+                    <dt>Calories/Serving (cals)</dt>
+                    <dd data-bind="text: caloriesPerServing"></dd>
+                    <dt>Protein/Serving (g)</dt>
+                    <dd data-bind="text: proteinPerServing"></dd>
                     <dt>Is Recipe</dt>
-                    <dd><input type="checkbox" data-bind="checked: isRecipe" /></dd>
+                    <dd><input type="checkbox" data-bind="checked: isRecipe" disabled/></dd>
                     <dt>Is Pantry Item</dt>
-                    <dd><input type="checkbox" data-bind="checked: isPantryItem" /></dd>
+                    <dd><input type="checkbox" data-bind="checked: isPantryItem" disabled /></dd>
+                    <dt>Gluten Free</dt>
+                    <dd><input type="checkbox" data-bind="checked: isGF" disabled /></dd>
                 </dl>
+
+                <div id="recipe" data-bind="visible: isRecipe">
+                    <dl class="dl-horizontal col-sm-offset-1">
+                        <dt>Recipe ID</dt>
+                        <dd data-bind="text: recipeID"></dd>
+                        <dt>Notes</dt>
+                        <dd data-bind="text: recipe.notes"></dd>
+                        <dt>Servings</dt>
+                        <dd data-bind="text: recipe.servings"></dd>
+                    </dl>
+                    <h4>Ingredients</h4>
+                    <ul data-bind="foreach: recipe.ingredients">
+                        <li data-bind="text: item.name"></li>
+                    </ul>
+                    <h4>Instructions</h4>
+                    <ol data-bind="foreach: recipe.instructions">
+                        <li data-bind="text: description"></li>
+                    </ol>
+                </div>
             </div>
         </div>
     </div>
 
-</div>
+    <div id="edit-modal" class="modal fade" tabindex="-1" role="dialog" data-bind="with: EditItem">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <h2 class="text-center">Edit</h2>
+                <hr />
+               
+                <dl class="dl-horizontal col-sm-offset-1">
+                    <dt>Name</dt>
+                    <dd><input type="text" data-bind="value: name"/> </dd>
+                    <dt>Category</dt>
+                    <dd><input type="text" data-bind="value: category" /></dd>
+                    <dt>Serving Size</dt>
+                    <dd><input type="number" data-bind="value: servingSize"/></dd>
+                    <dt>Serving Units</dt>
+                    <dd><input type="text"data-bind="value: servingUnits" /></dd>
+                    <dt>Calories/Serving (cals)</dt>
+                    <dd><input type="number" data-bind="value: caloriesPerServing"/></dd>
+                    <dt>Protein/Serving (g)</dt>
+                    <dd><input type="number" data-bind="value: proteinPerServing" /></dd>
+                    <dt>Is Recipe</dt>
+                    <dd><input type="checkbox" data-bind="checked: isRecipe" /></dd>
+                    <dt>Is Pantry Item</dt>
+                    <dd><input type="checkbox" data-bind="checked: isPantryItem" /></dd>
+                    <dt>Gluten Free</dt>
+                    <dd><input type="checkbox" data-bind="checked: isGF" /></dd>
+                </dl>
 
+                <div data-bind="visible: isRecipe">
+                    <h4>Ingredients</h4>
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Ingredient</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-center">Units</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: recipe.ingredients">
+                            <tr>
+                                <td><input type="text" data-bind="value: item.name"/></td>
+                                <td><input type="number" data-bind="value: quantity"/></td>
+                                <td><input type="text" data-bind="value: units"/></td>
+                                <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){}" style="text-decoration: none;"></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-sm btn-default" data-bind='click: '>Add Ingredient</button>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bind="click: function(){ $root.saveEdit($data.itemID());}">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

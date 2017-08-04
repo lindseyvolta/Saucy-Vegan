@@ -7,10 +7,9 @@
 
         self.SearchString = ko.observable();
         self.ItemCategory = ko.observable();
-
         self.Items = ko.observableArray();
-
         self.DetailItem = ko.observable();
+        self.EditItem = ko.observable();
 
         self.populateData = function (element) {
             $.ajax({
@@ -31,8 +30,25 @@
             $("#details-modal").modal("show");
         }
 
-        
+        self.showEdit = function (item) {
+            self.EditItem(item);
+            $("#edit-modal").modal("show");
+        }
 
+        self.saveEdit = function (item) {
+            $.ajax({
+                type: "POST",
+                url: "Items/Edit",
+                data: ko.toJSON(item),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $("#edit-modal").modal("toggle");
+                }
+            });  
+        }
+
+        
      
     }
 

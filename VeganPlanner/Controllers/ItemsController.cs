@@ -32,7 +32,13 @@ namespace VeganPlanner.Controllers
                                             select m.Category;
 
             var items = from m in _context.Item
-                         select m;
+                        .Include(c => c.recipe)
+                             .ThenInclude(c => c.Ingredients)
+                             .ThenInclude(c => c.item)
+                         .Include(c => c.recipe)
+                             .ThenInclude(c => c.Instructions)
+                         .AsNoTracking()
+                        select m;
 
             if (!String.IsNullOrEmpty(searchString))
                 items = items.Where(s => s.Name.Contains(searchString));
@@ -138,7 +144,7 @@ namespace VeganPlanner.Controllers
         }
 
         // GET: Items/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        /*public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -159,16 +165,15 @@ namespace VeganPlanner.Controllers
             }
             PopulateItemsDropDownList();
             return View(item);
-        }
+        }*/
 
         // POST: Items/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, int? dummy)
+        public async Task<IActionResult> Edit(int ? id)
         {
-            //, [Bind("ItemID,Name,IsRecipe,ServingSize,ServingUnits,Category,UserID,CaloriesPerServing,ProteinPerServing,IsPantryItem,IsGF,RecipeID,recipe")] Item item
             if (id == null)
             {
                 return NotFound();
@@ -204,28 +209,6 @@ namespace VeganPlanner.Controllers
 
             return View(item);
 
-            /*
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(item);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ItemExists(item.ItemID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
-            }
-            return View(item);*/
         }
 
         // GET: Items/Delete/5

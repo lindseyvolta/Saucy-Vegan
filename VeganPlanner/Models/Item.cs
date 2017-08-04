@@ -12,9 +12,7 @@ namespace VeganPlanner.Models
         public string ServingUnits { get; set; }
         public string Category { get; set; }
         public string UserID { get; set; }
-        [Display(Name = "Cals/Serving")]
         public int CaloriesPerServing { get; set; }
-        [Display(Name = "Protein/Serving (g)")]
         public int ProteinPerServing { get; set; }
         [Display(Name = "Pantry Item")]
         public bool IsPantryItem { get; set; }
