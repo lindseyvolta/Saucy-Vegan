@@ -37,15 +37,25 @@
 
         self.saveEdit = function (item) {
             $.ajax({
-                type: "POST",
-                url: "Items/Edit",
-                data: ko.toJSON(item),
+                url: 'Items/Edit',
+                type: 'POST',
                 dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                success: function (data) {
-                    $("#edit-modal").modal("toggle");
+                data: {item: ko.toJSON(item)},
+                contentType: 'application/json',
+                success: function (result) {
+                },
+                error: function (err) {
+                    if (err.responseText == "Creation Failed")
+                    { window.location.href = '/Items/Index/'; }
+                    else {
+                        alert("Status:" + err.responseText);
+                        window.location.href = '/Items/Index/';;
+                    }
+                },
+                complete: function () {
+                    window.location.href = '/Items/Index/';
                 }
-            });  
+            });
         }
 
         

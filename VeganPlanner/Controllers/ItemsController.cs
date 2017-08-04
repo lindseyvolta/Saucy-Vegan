@@ -53,6 +53,7 @@ namespace VeganPlanner.Controllers
         // GET: Items/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
@@ -171,43 +172,9 @@ namespace VeganPlanner.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int ? id)
+        public string Edit(Item item)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var item = _context.Item
-                 .Include(c => c.recipe)
-                     .ThenInclude(c => c.Ingredients)
-                     .ThenInclude(c => c.item)
-                 .Include(c => c.recipe)
-                     .ThenInclude(c => c.Instructions)
-                 .Where(c => c.ItemID == id)
-                 .Single();
-
-
-           if(await TryUpdateModelAsync(item))
-            {
-                try
-                {
-                    if (item.IsRecipe == false)
-                    {
-                        item.recipe = null;
-                    }
-                    _context.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                catch
-                {
-                    ModelState.AddModelError("", "Unable to save changes. Try again");
-                }
-                
-            }
-
-            return View(item);
+            return "test this - name = " + item.Name;
 
         }
 
