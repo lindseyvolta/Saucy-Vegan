@@ -171,11 +171,11 @@ namespace VeganPlanner.Controllers
         // POST: Items/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        public string Edit(Item item)
+        public string Edit(string itemJson)
         {
-            return "test this - name = " + item.Name;
+            Item item = Newtonsoft.Json.JsonConvert.DeserializeObject<Item>(itemJson);
 
+            return "hello";
         }
 
         // GET: Items/Delete/5
