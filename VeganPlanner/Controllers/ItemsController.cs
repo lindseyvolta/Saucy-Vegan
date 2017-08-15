@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VeganPlanner.Models;
 using System;
+using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace VeganPlanner.Controllers
@@ -175,7 +176,46 @@ namespace VeganPlanner.Controllers
         {
             Item item = Newtonsoft.Json.JsonConvert.DeserializeObject<Item>(itemJson);
 
-            return "hello";
+            return "hello" + item.Name;
+        }
+
+        [HttpPost]
+        public JsonResult Test(string json)
+        {
+            try
+            {
+                //dynamic item = JObject.Parse(json);
+                Item item = Newtonsoft.Json.JsonConvert.DeserializeObject<Item>(json);
+
+                _context.Entry(item).State = EntityState.Modified;
+                _context.Entry(item.recipe).State = EntityState.Modified;
+                if (item.IsRecipe)
+                { 
+                    foreach (Ingredient i in item.recipe.Ingredients)
+                    {
+                         _context.Entry(i).State = EntityState.Modified;
+                    }
+                }
+
+                _context.SaveChanges();
+
+                //_context.Item.Update
+                string temp = "hello " + item.Name;
+                if ((item.IsRecipe) && (item.recipe.Ingredients.Count > 0))
+                {
+                  foreach (Ingredient i in item.recipe.Ingredients)
+                  {
+                        temp = temp + " ingredient item =" + i.item.Name + " units =" + i.Units + " qty = " + i.Quantity.ToString();
+                  }
+                }
+                //return "hello" + item.Name;
+                return Json(temp);
+            }
+            catch (Exception e)
+            {
+                string temp = "An error occurred: " + e.Message;
+                return Json(temp);
+            }
         }
 
         // GET: Items/Delete/5
