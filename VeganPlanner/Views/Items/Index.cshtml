@@ -1,6 +1,7 @@
 <head>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/custom.css" />
 </head>
 
 <div id="FoodItems">
@@ -117,6 +118,7 @@
 
                 <div data-bind="visible: isRecipe">
                     <h4>Ingredients</h4>
+
                     <table class="table table-condensed">
                         <thead>
                             <tr>
@@ -130,12 +132,32 @@
                             <tr>
                                 <td><input type="text" data-bind="value: item.name"/></td>
                                 <td><input type="number" data-bind="value: quantity"/></td>
-                                <td><input type="text" data-bind="value: units"/></td>
-                                <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){}" style="text-decoration: none;"></a></td>
+                                <!-- <td><input type="text" data-bind="value: units"/></td> -->
+                                <td><select data-bind="options: $root.UnitList, value: units, optionsText: 'UnitName', optionsValue: 'UnitName'"></select></td>
+                                <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: $root.removeIngredient" style="text-decoration: none;"></a></td>
                             </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-sm btn-default" data-bind='click: '>Add Ingredient</button>
+                    <button class="btn btn-sm btn-default" data-bind='click: function(){$root.addIngredient}'>Add Ingredient</button>
+                    <h4>Instructions</h4>
+                    <table class="table table-condensed">                       
+                        <thead>
+                            <tr>
+                                <th class="col-md-1">Step</th>
+                                <th >Instructions</th>                                
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: recipe.instructions">
+                            <tr>
+                                <td data-bind="text: order"></td>
+                                <td><textarea name="" id="" rows="3" class="form-control" style="width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;" data-bind="value: description"></textarea></td>
+                                 <!-- <td><input type="text" data-bind="value: description" /></td> -->
+                                <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: $root.removeStep" style="text-decoration: none;"></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-sm btn-default" data-bind='click: function(){$root.addStep}'>Add Step</button>
                 </div>
 
                 <div class="modal-footer">
