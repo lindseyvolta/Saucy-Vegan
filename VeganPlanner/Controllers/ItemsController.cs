@@ -7,6 +7,7 @@ using VeganPlanner.Models;
 using System;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections;
 
 namespace VeganPlanner.Controllers
 {
@@ -28,9 +29,11 @@ namespace VeganPlanner.Controllers
         public async Task<IActionResult> GetItems(string searchString, string itemCategory)
         {
             // Use LINQ to get list of genres.
-            IQueryable<string> categoryQuery = from m in _context.Item
+            var categoryQuery = from m in _context.Item
                                             orderby m.Category
                                             select m.Category;
+            
+            ViewData["categories"] = new SelectList(categoryQuery);
 
             var items = from m in _context.Item
                         .Include(c => c.recipe)
@@ -145,42 +148,10 @@ namespace VeganPlanner.Controllers
             return View(item);
         }
 
-        // GET: Items/Edit/5
-        /*public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var item = await _context.Item
-                .Include(c => c.recipe)
-                    .ThenInclude(c => c.Ingredients)
-                    .ThenInclude(c => c.item)
-                .Include(c => c.recipe)
-                    .ThenInclude(c => c.Instructions)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ItemID == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            PopulateItemsDropDownList();
-            return View(item);
-        }*/
-
-        // POST: Items/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        public string Edit(string itemJson)
-        {
-            Item item = Newtonsoft.Json.JsonConvert.DeserializeObject<Item>(itemJson);
-
-            return "hello" + item.Name;
-        }
+       
 
         [HttpPost]
-        public JsonResult Test(string json)
+        public JsonResult Edit(string json)
         {
             try
             {
@@ -188,12 +159,17 @@ namespace VeganPlanner.Controllers
                 Item item = Newtonsoft.Json.JsonConvert.DeserializeObject<Item>(json);
 
                 _context.Entry(item).State = EntityState.Modified;
-                _context.Entry(item.recipe).State = EntityState.Modified;
+               
                 if (item.IsRecipe)
-                { 
+                {
+                    _context.Entry(item.recipe).State = EntityState.Modified;
                     foreach (Ingredient i in item.recipe.Ingredients)
                     {
                          _context.Entry(i).State = EntityState.Modified;
+                    }
+                    foreach (Step s in item.recipe.Instructions)
+                    {
+                        _context.Entry(s).State = EntityState.Modified;
                     }
                 }
 
@@ -243,15 +219,11 @@ namespace VeganPlanner.Controllers
         }
 
         // POST: Items/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public JsonResult DeleteConfirmed(string json)
         {
-            Item item = _context.Item
-                .Include(m => m.recipe)
-                .Where(m => m.ItemID == id)
-                .Single();
-
+            Item item = Newtonsoft.Json.JsonConvert.DeserializeObject<Item>(json);
+       
             if (item.IsRecipe)
             {
                 Recipe recipe = _context.Recipe
@@ -259,13 +231,19 @@ namespace VeganPlanner.Controllers
                         .Single();
                 _context.Recipe.Remove(recipe);
             }
-            
+            else
+            {
+                var list = _context.Recipe.Where(r => r.Ingredients.Any(i => i.item == item))
+                    .ToList();
+                if(list.Count > 0)
+                {
+                    return Json("Error: Part of a Recipe");
+                }
+            }
 
             _context.Item.Remove(item);
-           
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            _context.SaveChanges();
+            return Json("Delete confirmed");
         }
 
         private bool ItemExists(int id)

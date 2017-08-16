@@ -1,7 +1,10 @@
 <head>
     <!-- Latest compiled and minified CSS -->
+    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/css/custom.css" />
+    <script src="~/css/sweetalert-master/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/css/sweetalert-master/dist/sweetalert.css">
 </head>
 
 <div id="FoodItems">
@@ -10,7 +13,7 @@
     <p class="my-3">
         <input style="float:left" class="form-control" type="text" data-bind="textInput: SearchString" placeholder="Search for...">
         <input class="btn btn-default" data-bind="click: function () { populateData(); }" value="Go!" />
-
+        
         <select style="float: left; height:35px; padding: 2px 4px; border-radius: 3px 3px 3px 3px; border-color: lightgrey">
             <option value="">All</option>
         </select>
@@ -35,12 +38,13 @@
                 <td>
                     <a style="color: grey;" data-bind="click: function() { $root.showEdit($data); }" class="">Edit</a> |
                     <a style="color: grey;" data-bind="click: function() { $root.showDetails($data); }" class="">View</a> |
-                    <a style="color: grey;" class=""> Delete</a>
+                    <a style="color: grey;" data-bind="click: function() { $root.deleteConfirm($data); }" class=""> Delete</a>
                 </td>
             </tr>
         </tbody>
     </table>
 
+    <!--View Modal-->
     <div id="details-modal" class="modal fade" tabindex="-1" role="dialog" data-bind="with: DetailItem">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -78,7 +82,7 @@
                     </dl>
                     <h4>Ingredients</h4>
                     <ul data-bind="foreach: recipe.ingredients">
-                        <li data-bind="text: item.name"></li>
+                        <li data-bind="text: $data.quantity() + '  ' + $data.units() + '  ' + $data.item.name() "></li>
                     </ul>
                     <h4>Instructions</h4>
                     <ol data-bind="foreach: recipe.instructions">
@@ -88,7 +92,9 @@
             </div>
         </div>
     </div>
+    <!--/View Modal-->
 
+    <!--Edit Modal-->
     <div id="edit-modal" class="modal fade" tabindex="-1" role="dialog" data-bind="with: EditItem">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -119,7 +125,7 @@
                 <div data-bind="visible: isRecipe">
                     <h4>Ingredients</h4>
 
-                    <table class="table table-condensed">
+                    <table class="table table-condensed text-center">
                         <thead>
                             <tr>
                                 <th class="text-center">Ingredient</th>
@@ -132,19 +138,19 @@
                             <tr>
                                 <td><input type="text" data-bind="value: item.name"/></td>
                                 <td><input type="number" data-bind="value: quantity"/></td>
-                                <!-- <td><input type="text" data-bind="value: units"/></td> -->
                                 <td><select data-bind="options: $root.UnitList, value: units, optionsText: 'UnitName', optionsValue: 'UnitName'"></select></td>
-                                <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: $root.removeIngredient" style="text-decoration: none;"></a></td>
+                                <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){$root.removeIngredient($data)}" style="text-decoration: none;"></a></td>
                             </tr>
                         </tbody>
                     </table>
                     <button class="btn btn-sm btn-default" data-bind='click: function(){$root.addIngredient}'>Add Ingredient</button>
+                    <hr/>
                     <h4>Instructions</h4>
-                    <table class="table table-condensed">                       
+                    <table class="table table-condensed text-center">                       
                         <thead>
                             <tr>
-                                <th class="col-md-1">Step</th>
-                                <th >Instructions</th>                                
+                                <th class="col-md-1 text-center">Step</th>
+                                <th class="text-center">Instructions</th>                                
                                 <th></th>
                             </tr>
                         </thead>
@@ -152,12 +158,11 @@
                             <tr>
                                 <td data-bind="text: order"></td>
                                 <td><textarea name="" id="" rows="3" class="form-control" style="width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;" data-bind="value: description"></textarea></td>
-                                 <!-- <td><input type="text" data-bind="value: description" /></td> -->
-                                <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: $root.removeStep" style="text-decoration: none;"></a></td>
+                                <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){ $root.removeStep($data)}" style="text-decoration: none;"></a></td>
                             </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-sm btn-default" data-bind='click: function(){$root.addStep}'>Add Step</button>
+                    <button class="btn btn-sm btn-default" data-bind='click: function(){$root.addStep()}'>Add Step</button>
                 </div>
 
                 <div class="modal-footer">
@@ -168,4 +173,8 @@
             
         </div>
     </div>
+    <!--/Edit Modal-->
+
+
+
 </div>

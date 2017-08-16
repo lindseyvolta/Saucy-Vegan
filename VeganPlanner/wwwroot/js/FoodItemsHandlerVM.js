@@ -10,12 +10,15 @@
         self.Items = ko.observableArray();
         self.DetailItem = ko.observable();
         self.EditItem = ko.observable();
+        self.DeleteItem = ko.observable();
         self.Ingredients = ko.observableArray();
+
+        
 
         self.UnitList = [
             { UnitName: "lb"},
             { UnitName: "Cup"},
-            { UnitName: "tsp"}, {UnitName: "tbsp"}, {UnitName: "oz"}
+            { UnitName: "tsp"}, {UnitName: "Tbsp"}, {UnitName: "oz"}
         ];    
 
         self.addIngredient = function (item) {
@@ -27,8 +30,12 @@
             self.EditItem.recipe.Ingredients.remove(ingredient);
         };
 
-        self.addStep = function (item) {
-            self.EditItem.recipe.instructions.push(new instruction());
+        self.addStep = function () {
+            var new_step = new Step();
+            new_step.RecipeID = self.EditItem.recipeID;
+            new_step.Description = "";
+            new_step.Order = 0;
+            self.EditItem.recipe.instructions.push(new Step());
         };
 
         self.removeStep = function (instruction) {
@@ -56,7 +63,7 @@
 
         self.showEdit = function (item) {
             self.EditItem(item);
-            //self.Ingredients(item.recipe.ingredients);
+            
             $("#edit-modal").modal("show");
         }
 
@@ -66,7 +73,7 @@
             $.ajax({
                 type: 'post',
                 dataType: 'json',
-                url: 'Items/Test',
+                url: 'Items/Edit',
                 data: { "json": ko.toJSON(item) },
                 success: function (json) {
                     if (json) {
@@ -83,21 +90,58 @@
             }); 
         } 
 
-        /*self.saveEdit = function (item) {
-            $.post({
-                url: 'Items/Edit',
-                data: { "itemJson": ko.toJSON(item) },
-                success: function (result) {
-                    alert(result);
-                    $("edit-modal").modal("toggle");
-                },
-                error: function () {
-                    alert("error"+result);
-                }
-                
-            });
-        }*/
 
+        self.deleteConfirm = function (item) {
+            swal({
+                title: "Delete " + item.name() + "?",
+                text: "You will not be able to recover this food item.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            },
+                function (isConfirm) {
+                    
+                    if (isConfirm) {
+                        
+                        $.ajax({
+                            type: 'post',
+                            dataType: 'json',
+                            url: 'Items/DeleteConfirmed',
+                            data: { "json": ko.toJSON(item) },
+                            success: function (json) {
+                                if (json === "Delete confirmed") {
+                                    self.Items.remove(item);
+                                    swal({
+                                        type: "success",
+                                        title: "Deleted!",
+                                        timer: 2000,
+                                        allowOutsideClick: true,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    swal({
+                                        type: "error",
+                                        title: "Erorr Occurred",
+                                        text: "You cannot delete a food item that is part of an existing recipe.",
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                }
+                            },
+                            error: function () {
+                                alert("error");
+                            },
+
+                        }); 
+                        
+                    }
+                });
+        }
+       
     
      
     }
