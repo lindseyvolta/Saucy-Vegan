@@ -1,6 +1,6 @@
-define([], function () {  
-    
-    function ItemVM () {
+define([], function () {
+
+    function ItemVM() {
         var self = this;
 
         self.ItemID = ko.observable();
@@ -15,7 +15,7 @@ define([], function () {
         self.IsPantryItem = ko.observable();
         self.IsGF = ko.observable();
         self.RecipeID = ko.observable();
-        self.recipe = ko.observable(new RecipeVM());
+        self.Recipe = new RecipeVM();
 
         self.load = function (data) {
             self.ItemID(data.itemID);
@@ -29,8 +29,10 @@ define([], function () {
             self.ProteinPerServing(data.proteinPerServing);
             self.IsPantryItem(data.isPantryItem);
             self.IsGF(data.isGF);
-            self.RecipeID(data.recipeID);
-            self.recipe().load(data.recipe);
+            if (self.IsRecipe()) {
+                self.RecipeID(data.recipeID);
+                self.Recipe.load(data.recipe);
+            }
         }
     }
 
@@ -47,16 +49,29 @@ define([], function () {
             self.RecipeID(data.recipeID);
             self.Notes(data.notes);
             self.Servings(data.servings);
-            self.Ingredients(data.ingredients);
-            self.Instructions(data.instructions);
+            //self.Ingredients(data.ingredients);
+
+            for (var i = 0; i < data.ingredients.length; i += 1) {
+                var anIngredient = new IngredientVM();
+                anIngredient.load(data.ingredients[i]);
+                self.Ingredients.push(anIngredient);
+            }
+            //self.Instructions(data.instructions);
+
+            for (var i = 0; i < data.instructions.length; i += 1) {
+                var anInstruction = new StepVM();
+                anInstruction.load(data.instructions[i]);
+                self.Instructions.push(anInstruction);
+            }
         }
     }
 
-    function IngredientVM () {
+    function IngredientVM() {
         var self = this;
 
         self.IngredientID = ko.observable();
-        self.Item = ko.observable(new ItemVM());
+        //self.Item = ko.observable(new ItemVM());
+        self.Item = new ItemVM();
         self.ItemID = ko.observable();
         self.Quantity = ko.observable();
         self.RecipeID = ko.observable();
@@ -64,7 +79,7 @@ define([], function () {
 
         self.load = function (data) {
             self.IngredientID(data.ingredientID);
-            self.Item().load(data.item);
+            self.Item.load(data.item);
             self.ItemID(data.itemID);
             self.Quantity(data.quantity);
             self.RecipeID(data.recipeID);
@@ -72,7 +87,7 @@ define([], function () {
         }
     }
 
-    function StepVM () {
+    function StepVM() {
         var self = this;
 
         self.StepID = ko.observable();
@@ -87,7 +102,6 @@ define([], function () {
             self.Order(data.order);
         }
     }
-
     /**
      * View model that handles the "My Kitchen -> Food Items" view.
      */
@@ -100,9 +114,7 @@ define([], function () {
         self.DetailItem = ko.observable();
         self.EditItem = ko.observable();
         self.DeleteItem = ko.observable();
-        self.IngredientList = ko.observableArray();
 
-        
 
         self.UnitList = [
             { UnitName: "lb"},
@@ -111,20 +123,21 @@ define([], function () {
         ];    
 
         self.addIngredient = function () {
-            self.EditItem().recipe.ingredients.push(new IngredientVM());
-            
+            self.EditItem().Recipe.Ingredients.push(new IngredientVM());
         };
 
         self.removeIngredient = function (ingredient) {
-            self.EditItem.recipe.Ingredients.remove(ingredient);
+            self.EditItem().Recipe.Ingredients.remove(ingredient);
         };
 
-        self.addStep = function () {
-            
+        self.addStep = function (index) {
+            var newStep = new StepVM();
+            newStep.Order = index;
+            self.EditItem().Recipe.Instructions.push(newStep);
         };
 
         self.removeStep = function (instruction) {
-            self.EditItem.recipe.instructions.remove(instruction);
+            self.EditItem().Recipe.Instructions.remove(instruction);
         };
 
         self.populateData = function (element) {
@@ -134,14 +147,15 @@ define([], function () {
                 data: { searchString: self.SearchString(), itemCategory: self.ItemCategory() },
                 success: function (data) {
 
-                //self.Items(data);
-                 for(var i = 0; i < data.items.length ; i+=1){
-                     self.Items.push(new ItemVM(data.items[i]));
+                for (var i = 0; i < data.items.length; i += 1){
+                     var anitem = new ItemVM();
+                     anitem.load(data.items[i])
+                     self.Items.push(anitem);
                  }
                     
+                 if (element && !ko.dataFor(element))
+                     ko.applyBindings(self, element);
 
-                    //if (element && !ko.dataFor(element))
-                      // ko.applyBindings(self, element);
                 }
             });  
         }
@@ -153,13 +167,11 @@ define([], function () {
 
         self.showEdit = function (item) {
             self.EditItem(item);
-            
             $("#edit-modal").modal("show");
         }
 
         
         self.saveEdit = function (item) {
-
             $.ajax({
                 type: 'post',
                 dataType: 'json',
@@ -167,7 +179,13 @@ define([], function () {
                 data: { "json": ko.toJSON(item) },
                 success: function (json) {
                     if (json) {
-                        alert('ok - ' + json);
+                        swal({
+                            type: "success",
+                            title: "Saved",
+                            text: item.Name() + " has been edited.",
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                         $("#edit-modal").modal("toggle");
                     } else {
                         alert('failed');
@@ -190,7 +208,7 @@ define([], function () {
 
         self.deleteConfirm = function (item) {
             swal({
-                title: "Delete " + item.name() + "?",
+                title: "Delete " + item.Name() + "?",
                 text: "You will not be able to recover this food item.",
                 type: "warning",
                 showCancelButton: true,
