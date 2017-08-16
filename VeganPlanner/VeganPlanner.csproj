@@ -16,6 +16,7 @@
     <Content Include="wwwroot\css\bootstrap-3.3.7-dist\css\custom.css" />
     <Content Include="wwwroot\css\custom.css" />
     <Content Include="wwwroot\js\FoodItemsHandlerVM.js" />
+    <Content Include="wwwroot\lib\knockout\dist\knockout.debug.js" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BeginCollectionItemCore" Version="1.0.8" />

@@ -1,4 +1,93 @@
-﻿define([], function () {
+define([], function () {  
+    
+    function ItemVM () {
+        var self = this;
+
+        self.ItemID = ko.observable();
+        self.Name = ko.observable();
+        self.IsRecipe = ko.observable();
+        self.ServingSize = ko.observable();
+        self.ServingUnits = ko.observable();
+        self.Category = ko.observable();
+        self.UserID = ko.observable();
+        self.CaloriesPerServing = ko.observable();
+        self.ProteinPerServing = ko.observable();
+        self.IsPantryItem = ko.observable();
+        self.IsGF = ko.observable();
+        self.RecipeID = ko.observable();
+        self.recipe = ko.observable(new RecipeVM());
+
+        self.load = function (data) {
+            self.ItemID(data.itemID);
+            self.Name(data.name)
+            self.IsRecipe(data.isRecipe);
+            self.ServingSize(data.servingSize);
+            self.ServingUnits(data.servingUnits);
+            self.Category(data.category);
+            self.UserID(data.userID);
+            self.CaloriesPerServing(data.caloriesPerServing);
+            self.ProteinPerServing(data.proteinPerServing);
+            self.IsPantryItem(data.isPantryItem);
+            self.IsGF(data.isGF);
+            self.RecipeID(data.recipeID);
+            self.recipe().load(data.recipe);
+        }
+    }
+
+    function RecipeVM() {
+        var self = this;
+
+        self.RecipeID = ko.observable();
+        self.Notes = ko.observable();
+        self.Servings = ko.observable();
+        self.Ingredients = ko.observableArray();
+        self.Instructions = ko.observableArray();
+
+        self.load = function (data) {
+            self.RecipeID(data.recipeID);
+            self.Notes(data.notes);
+            self.Servings(data.servings);
+            self.Ingredients(data.ingredients);
+            self.Instructions(data.instructions);
+        }
+    }
+
+    function IngredientVM () {
+        var self = this;
+
+        self.IngredientID = ko.observable();
+        self.Item = ko.observable(new ItemVM());
+        self.ItemID = ko.observable();
+        self.Quantity = ko.observable();
+        self.RecipeID = ko.observable();
+        self.Units = ko.observable();
+
+        self.load = function (data) {
+            self.IngredientID(data.ingredientID);
+            self.Item().load(data.item);
+            self.ItemID(data.itemID);
+            self.Quantity(data.quantity);
+            self.RecipeID(data.recipeID);
+            self.Units(data.units);
+        }
+    }
+
+    function StepVM () {
+        var self = this;
+
+        self.StepID = ko.observable();
+        self.RecipeID = ko.observable();
+        self.Description = ko.observable();
+        self.Order = ko.observable();
+
+        self.load = function (data) {
+            self.StepID(data.stepID);
+            self.RecipeID(data.recipeID);
+            self.Description(data.description);
+            self.Order(data.order);
+        }
+    }
+
     /**
      * View model that handles the "My Kitchen -> Food Items" view.
      */
@@ -11,7 +100,7 @@
         self.DetailItem = ko.observable();
         self.EditItem = ko.observable();
         self.DeleteItem = ko.observable();
-        self.Ingredients = ko.observableArray();
+        self.IngredientList = ko.observableArray();
 
         
 
@@ -21,8 +110,8 @@
             { UnitName: "tsp"}, {UnitName: "Tbsp"}, {UnitName: "oz"}
         ];    
 
-        self.addIngredient = function (item) {
-            //self.Ingredients.push(new Ingredient());
+        self.addIngredient = function () {
+            self.EditItem().recipe.ingredients.push(new IngredientVM());
             
         };
 
@@ -31,11 +120,7 @@
         };
 
         self.addStep = function () {
-            var new_step = new Step();
-            new_step.RecipeID = self.EditItem.recipeID;
-            new_step.Description = "";
-            new_step.Order = 0;
-            self.EditItem.recipe.instructions.push(new Step());
+            
         };
 
         self.removeStep = function (instruction) {
@@ -48,10 +133,15 @@
                 url: "Items/GetItems",
                 data: { searchString: self.SearchString(), itemCategory: self.ItemCategory() },
                 success: function (data) {
-                    ko.mapping.fromJS(data.items, {}, self.Items);
 
-                    if (element && !ko.dataFor(element))
-                        ko.applyBindings(self, element);
+                //self.Items(data);
+                 for(var i = 0; i < data.items.length ; i+=1){
+                     self.Items.push(new ItemVM(data.items[i]));
+                 }
+                    
+
+                    //if (element && !ko.dataFor(element))
+                      // ko.applyBindings(self, element);
                 }
             });  
         }
@@ -89,7 +179,14 @@
                 
             }); 
         } 
-
+        
+        // public void testComputed(CString test) { do stuff that... }
+        /*self.testComputed = ko.pureComputed(function () {
+            self.test();
+            ko.ignoreDependencies(function () {
+                // do stuff that won't trigger testComputed's reevaluation.
+            });
+        });*/
 
         self.deleteConfirm = function (item) {
             swal({
