@@ -33,7 +33,7 @@ namespace VeganPlanner.Controllers
                                             orderby m.Category
                                             select m.Category;
             
-            ViewData["categories"] = new SelectList(categoryQuery);
+            //ViewData["categories"] = new SelectList(categoryQuery);
 
             var items = from m in _context.Item
                         .Include(c => c.recipe)
@@ -53,55 +53,25 @@ namespace VeganPlanner.Controllers
             return Json(new { items = await items.ToListAsync() });
         }
 
-
-        // GET: Items/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> GetItemsDropDown()
         {
+            var itemsQuery = from i in _context.Item
+                             where i.IsRecipe == false
+                             orderby i.Name
+                             select i;
+                             
+            return Json(new { itemsQuery = await itemsQuery.ToListAsync() });
 
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var item = await _context.Item
-           .Include(c => c.recipe)
-               .ThenInclude(c => c.Ingredients)
-               .ThenInclude(c => c.item)
-           .Include(c => c.recipe)
-               .ThenInclude(c => c.Instructions)
-           .AsNoTracking()
-           .SingleOrDefaultAsync(m => m.ItemID == id);
-
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            return View(item);
         }
 
         
         // GET: Items/Create
         public IActionResult Create()
         {
-            PopulateItemsDropDownList();
+            //PopulateItemsDropDownList();
             return View();
         }
 
-        public ActionResult AddNewIngredient()
-        {
-            return PartialView("IngredientPartial", new Ingredient());
-        }
-
-        private void PopulateItemsDropDownList(object selectedItem = null)
-        {
-            var itemsQuery = from i in _context.Item
-                             where i.IsRecipe == false
-                             orderby i.Name
-                             select i;
-
-            ViewBag.itemList = new SelectList(itemsQuery.AsNoTracking(), "ItemID", "Name", selectedItem);
-        }
 
         // POST: Items/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 

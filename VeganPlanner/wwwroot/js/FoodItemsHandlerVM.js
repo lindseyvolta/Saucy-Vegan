@@ -70,8 +70,7 @@ define([], function () {
         var self = this;
 
         self.IngredientID = ko.observable();
-        //self.Item = ko.observable(new ItemVM());
-        self.Item = new ItemVM();
+        self.Item = ko.observable();
         self.ItemID = ko.observable();
         self.Quantity = ko.observable();
         self.RecipeID = ko.observable();
@@ -79,7 +78,9 @@ define([], function () {
 
         self.load = function (data) {
             self.IngredientID(data.ingredientID);
-            self.Item.load(data.item);
+            var im = new ItemVM();
+            im.load(data.item);
+            self.Item(im)
             self.ItemID(data.itemID);
             self.Quantity(data.quantity);
             self.RecipeID(data.recipeID);
@@ -114,6 +115,7 @@ define([], function () {
         self.DetailItem = ko.observable();
         self.EditItem = ko.observable();
         self.DeleteItem = ko.observable();
+        self.ItemsDropDown = ko.observableArray();
 
 
         self.UnitList = [
@@ -160,13 +162,33 @@ define([], function () {
             });  
         }
 
+
         self.showDetails = function (item) {
             self.DetailItem(item);
             $("#details-modal").modal("show");
         }
 
-        self.showEdit = function (item) {
+
+        self.GetItemsDropDownList = function () {
+            $.ajax({
+                type: "GET",
+                url: "Items/GetItemsDropDown",
+                success: function (data) {
+                    alert("success");
+
+                    for (var i = 0; i < data.itemsQuery.length; i += 1) {
+                        var anitem = new ItemVM();
+                        anitem.load(data.itemsQuery[i])
+                        self.ItemsDropDown.push(anitem);
+                    }
+
+                }
+            });
+        }
+
+         self.showEdit = function (item) {
             self.EditItem(item);
+            self.GetItemsDropDownList();
             $("#edit-modal").modal("show");
         }
 

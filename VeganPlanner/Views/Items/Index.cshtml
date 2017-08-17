@@ -122,7 +122,6 @@
                 </dl>
 
                 <div data-bind="visible: IsRecipe">
-                    <h4>Ingredients</h4>
 
                     <table class="table table-condensed text-center">
                         <thead>
@@ -135,20 +134,19 @@
                         </thead>
                         <tbody data-bind="foreach: Recipe.Ingredients">
                             <tr>
-                                <td><input type="text" data-bind="value: Item.Name" /></td>
+                                <td><select data-bind="options: $root.ItemsDropDown, optionsText: Name, value: Item.Name"></select></td>
                                 <td><input type="number" data-bind="value: Quantity" /></td>
                                 <td><select data-bind="options: $root.UnitList, value: Units, optionsText: 'UnitName', optionsValue: 'UnitName'"></select></td>
                                 <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){$root.removeIngredient($data)}" style="text-decoration: none;"></a></td>
                             </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-sm btn-default" data-bind='click: function(){$root.addIngredient()}'>Add Ingredient</button>
-                    <hr />
-                    <h4>Instructions</h4>
+                    <button class="btn btn-sm btn-default" style="float: right; margin: 5px;" data-bind='click: function(){$root.addIngredient()}'>Add Ingredient</button>
+                    
                     <table class="table table-condensed text-center">
                         <thead>
                             <tr>
-                                <th class="col-md-1 text-center">Step</th>
+                                <th class="col-md-1 text-center"></th>
                                 <th class="text-center">Instructions</th>
                                 <th></th>
                             </tr>
@@ -161,9 +159,10 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-sm btn-default" data-bind='click: function(){$root.addStep($data.Recipe.Instructions._latestValue.length)}'>Add Step</button>
+                    <button class="btn btn-sm btn-default" style="float: right; margin: 5px;" data-bind='click: function(){$root.addStep($data.Recipe.Instructions._latestValue.length)}'>Add Step</button>
+                    
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer mt-3">
                     <button type="button" class="btn btn-primary" data-bind="click: function(){ $root.saveEdit($data);}">Save</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
