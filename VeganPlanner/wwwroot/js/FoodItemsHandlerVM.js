@@ -142,7 +142,7 @@ define([], function () {
             self.EditItem().Recipe.Instructions.remove(instruction);
         };
 
-        self.populateData = function (element) {
+        self.populateData = function (element) {            
             $.ajax({
                 type: "GET",
                 url: "Items/GetItems",
@@ -173,22 +173,22 @@ define([], function () {
             $.ajax({
                 type: "GET",
                 url: "Items/GetItemsDropDown",
+                async: false,
                 success: function (data) {
-                    alert("success");
-
+                    //alert("success ");                                
                     for (var i = 0; i < data.itemsQuery.length; i += 1) {
                         var anitem = new ItemVM();
                         anitem.load(data.itemsQuery[i])
                         self.ItemsDropDown.push(anitem);
-                    }
-
+                    }                    
                 }
             });
         }
 
-         self.showEdit = function (item) {
-            self.EditItem(item);
+        self.showEdit = function (item) {
+            self.ItemsDropDown.removeAll();
             self.GetItemsDropDownList();
+            self.EditItem(item);
             $("#edit-modal").modal("show");
         }
 

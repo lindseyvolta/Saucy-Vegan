@@ -56,10 +56,13 @@ namespace VeganPlanner.Controllers
         public async Task<IActionResult> GetItemsDropDown()
         {
             var itemsQuery = from i in _context.Item
+                            .AsNoTracking()
                              where i.IsRecipe == false
                              orderby i.Name
                              select i;
-                             
+
+            System.IO.File.WriteAllText("c:\\temp\\myfile.txt", "count = "+ itemsQuery.ToList().Count.ToString());
+
             return Json(new { itemsQuery = await itemsQuery.ToListAsync() });
 
         }

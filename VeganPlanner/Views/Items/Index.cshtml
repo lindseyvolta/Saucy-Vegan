@@ -123,6 +123,16 @@
 
                 <div data-bind="visible: IsRecipe">
 
+                    <!--  
+                    <table class="table table-condensed text-center">
+                        <tbody data-bind="foreach: $root.ItemsDropDown">
+                            <tr>
+                                <td data-bind="text: Name"></td>
+                                <td data-bind="text: Category"></td>
+                            </tr>
+                        </tbody>
+                    </table> -->
+
                     <table class="table table-condensed text-center">
                         <thead>
                             <tr>
@@ -133,8 +143,8 @@
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: Recipe.Ingredients">
-                            <tr>
-                                <td><select data-bind="options: $root.ItemsDropDown, optionsText: Name, value: Item.Name"></select></td>
+                            <tr>                             
+                                <td><select data-bind="options: $root.ItemsDropDown, optionsText: 'Name', value: Item"></select></td> 
                                 <td><input type="number" data-bind="value: Quantity" /></td>
                                 <td><select data-bind="options: $root.UnitList, value: Units, optionsText: 'UnitName', optionsValue: 'UnitName'"></select></td>
                                 <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){$root.removeIngredient($data)}" style="text-decoration: none;"></a></td>
@@ -142,7 +152,7 @@
                         </tbody>
                     </table>
                     <button class="btn btn-sm btn-default" style="float: right; margin: 5px;" data-bind='click: function(){$root.addIngredient()}'>Add Ingredient</button>
-                    
+
                     <table class="table table-condensed text-center">
                         <thead>
                             <tr>
@@ -160,7 +170,7 @@
                         </tbody>
                     </table>
                     <button class="btn btn-sm btn-default" style="float: right; margin: 5px;" data-bind='click: function(){$root.addStep($data.Recipe.Instructions._latestValue.length)}'>Add Step</button>
-                    
+
                 </div>
                 <div class="modal-footer mt-3">
                     <button type="button" class="btn btn-primary" data-bind="click: function(){ $root.saveEdit($data);}">Save</button>
