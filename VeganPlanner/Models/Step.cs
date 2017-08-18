@@ -11,5 +11,17 @@ namespace VeganPlanner.Models
         public int RecipeID { get; set; }
         public string Description { get; set; }
         public int Order { get; set; }
+
+        public Step Clone()
+        {
+            Step new_ingredient = new Step()
+            {
+                StepID = StepID,
+                RecipeID = RecipeID,
+                Description = Description,
+                Order = Order
+            };
+            return new_ingredient;
+        }
     }
 }
