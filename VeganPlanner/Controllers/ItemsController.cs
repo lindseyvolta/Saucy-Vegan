@@ -61,7 +61,7 @@ namespace VeganPlanner.Controllers
                              orderby i.Name
                              select i;
 
-            System.IO.File.WriteAllText("c:\\temp\\myfile.txt", "count = "+ itemsQuery.ToList().Count.ToString());
+            //System.IO.File.WriteAllText("c:\\temp\\myfile.txt", "count = "+ itemsQuery.ToList().Count.ToString());
 
             return Json(new { itemsQuery = await itemsQuery.ToListAsync() });
 
