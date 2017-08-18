@@ -42,7 +42,7 @@ define([], function () {
         self.RecipeID = ko.observable();
         self.Notes = ko.observable();
         self.Servings = ko.observable();
-        self.Ingredients = ko.observableArray();
+        self.Ingredients = ko.observableArray().extend({deferred: true});
         self.Instructions = ko.observableArray();
 
         self.load = function (data) {
@@ -109,13 +109,15 @@ define([], function () {
     function FoodItemsHandlerVM() {
         var self = this;
 
+        window.instance = self;
+
         self.SearchString = ko.observable();
         self.ItemCategory = ko.observable();
         self.Items = ko.observableArray();
         self.DetailItem = ko.observable();
         self.EditItem = ko.observable();
         self.DeleteItem = ko.observable();
-        self.ItemsDropDown = ko.observableArray();
+        self.ItemsDropDown = ko.observableArray().extend({ deferred: true });
 
 
         self.UnitList = [
@@ -173,21 +175,36 @@ define([], function () {
             $.ajax({
                 type: "GET",
                 url: "Items/GetItemsDropDown",
-                async: false,
                 success: function (data) {
-                    //alert("success ");                                
+                    //alert("success ");
+                    var array = [];                                
                     for (var i = 0; i < data.itemsQuery.length; i += 1) {
                         var anitem = new ItemVM();
                         anitem.load(data.itemsQuery[i])
-                        self.ItemsDropDown.push(anitem);
-                    }                    
+                        //self.ItemsDropDown.push(anitem);
+                        array.push(anitem);
+                    }   
+
+                    self.ItemsDropDown(array);                 
                 }
             });
         }
 
+        self.GetItemsDropDownListNew = function () {
+            var array = [];
+            for (var i = 0; i < self.Items().length; i += 1) {
+                if (self.Items()[i].IsRecipe() == false)
+                    array.push(self.Items()[i]);
+            }
+
+            self.ItemsDropDown(array);
+
+        }
+
+
         self.showEdit = function (item) {
             self.ItemsDropDown.removeAll();
-            self.GetItemsDropDownList();
+            self.GetItemsDropDownListNew();
             self.EditItem(item);
             $("#edit-modal").modal("show");
         }

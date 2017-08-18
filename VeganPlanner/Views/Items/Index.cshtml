@@ -144,7 +144,7 @@
                         </thead>
                         <tbody data-bind="foreach: Recipe.Ingredients">
                             <tr>                             
-                                <td><select data-bind="options: $root.ItemsDropDown, optionsText: 'Name', value: Item"></select></td> 
+                                <td><select data-bind="options: $root.ItemsDropDown, optionsText: 'Name', optionsValue: 'ItemID', value: ItemID"></select></td> 
                                 <td><input type="number" data-bind="value: Quantity" /></td>
                                 <td><select data-bind="options: $root.UnitList, value: Units, optionsText: 'UnitName', optionsValue: 'UnitName'"></select></td>
                                 <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){$root.removeIngredient($data)}" style="text-decoration: none;"></a></td>
