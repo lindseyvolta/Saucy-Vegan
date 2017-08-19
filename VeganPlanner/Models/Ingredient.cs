@@ -25,6 +25,8 @@ namespace VeganPlanner.Models
                 Quantity = Quantity,
                 Units = Units
             };
+            //if (item != null)
+            //    new_ingredient.item = item;
             return new_ingredient;
         }
     }
