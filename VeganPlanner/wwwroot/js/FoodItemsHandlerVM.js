@@ -42,7 +42,7 @@ define([], function () {
         self.RecipeID = ko.observable();
         self.Notes = ko.observable();
         self.Servings = ko.observable();
-        self.Ingredients = ko.observableArray();
+        self.Ingredients = ko.observableArray().extend({deferred: true});
         self.Instructions = ko.observableArray();
 
         self.load = function (data) {
@@ -109,14 +109,17 @@ define([], function () {
     function FoodItemsHandlerVM() {
         var self = this;
 
+        window.instance = self;
+
         self.SearchString = ko.observable();
         self.ItemCategory = ko.observable();
         self.Items = ko.observableArray();
         self.DetailItem = ko.observable();
         self.EditItem = ko.observable();
         self.DeleteItem = ko.observable();
-        self.ItemsDropDown = ko.observableArray();
-
+        self.ItemsDropDown = ko.observableArray().extend({ deferred: true });
+        self.CategoryDropDown = ko.observableArray().extend({ deferred: true });
+        self.ModalTitle = ko.observable();
 
         self.UnitList = [
             { UnitName: "lb"},
@@ -142,23 +145,28 @@ define([], function () {
             self.EditItem().Recipe.Instructions.remove(instruction);
         };
 
-        self.populateData = function (element) {
+        self.populateData = function (element) {            
             $.ajax({
                 type: "GET",
                 url: "Items/GetItems",
                 data: { searchString: self.SearchString(), itemCategory: self.ItemCategory() },
                 success: function (data) {
 
-                for (var i = 0; i < data.items.length; i += 1){
-                     var anitem = new ItemVM();
-                     anitem.load(data.items[i])
-                     self.Items.push(anitem);
-                 }
-                    
-                 if (element && !ko.dataFor(element))
-                     ko.applyBindings(self, element);
+                    self.Items.removeAll();
 
+                    for (var i = 0; i < data.items.length; i += 1){
+                         var anitem = new ItemVM();
+                         anitem.load(data.items[i])
+                         self.Items.push(anitem);
+                     }
+                    
+                     if (element && !ko.dataFor(element))
+                        ko.applyBindings(self, element);
+
+                 
+                     self.GetCategoriesDropDownList();
                 }
+
             });  
         }
 
@@ -169,55 +177,104 @@ define([], function () {
         }
 
 
-        self.GetItemsDropDownList = function () {
+        self.GetCategoriesDropDownList = function () {
             $.ajax({
                 type: "GET",
-                url: "Items/GetItemsDropDown",
+                url: "Items/GetCategoriesDropDown",
                 success: function (data) {
-                    alert("success");
+                    var array = [];                                
+                    for (var i = 0; i < data.categoryQuery.length; i += 1) {
+                        array.push(data.categoryQuery[i]);
+                    }   
 
-                    for (var i = 0; i < data.itemsQuery.length; i += 1) {
-                        var anitem = new ItemVM();
-                        anitem.load(data.itemsQuery[i])
-                        self.ItemsDropDown.push(anitem);
-                    }
-
+                    self.CategoryDropDown(array);                 
                 }
             });
         }
 
-         self.showEdit = function (item) {
+        self.GetItemsDropDownListNew = function () {
+            var array = [];
+            for (var i = 0; i < self.Items().length; i += 1) {
+                if (self.Items()[i].IsRecipe() == false)
+                    array.push(self.Items()[i]);
+            }
+
+            self.ItemsDropDown(array);
+
+        }
+
+
+        self.showEdit = function (item) {
+            if (item == null) {
+                self.ModalTitle = "Create";
+                var item = new ItemVM();
+            } else {
+                self.ModalTitle = "Edit";
+                
+            }
+
             self.EditItem(item);
-            self.GetItemsDropDownList();
+            self.ItemsDropDown.removeAll();
+            self.GetItemsDropDownListNew();
+            
             $("#edit-modal").modal("show");
         }
 
         
         self.saveEdit = function (item) {
-            $.ajax({
-                type: 'post',
-                dataType: 'json',
-                url: 'Items/Edit',
-                data: { "json": ko.toJSON(item) },
-                success: function (json) {
-                    if (json) {
-                        swal({
-                            type: "success",
-                            title: "Saved",
-                            text: item.Name() + " has been edited.",
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                        $("#edit-modal").modal("toggle");
-                    } else {
-                        alert('failed');
-                    }
-                },
-                error: function () {
-                    alert("error");
-                },
-                
-            }); 
+            if (item.ItemID._latestValue === undefined) {
+                $.ajax({
+                    type: 'post',
+                    dataType: 'json',
+                    url: 'Items/Create',
+                    data: { "json": ko.toJSON(item) },
+                    success: function (json) {
+                        if (json == "Created") {
+                            swal({
+                                type: "success",
+                                title: "Saved",
+                                text: item.Name() + " has been created.",
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            $("#edit-modal").modal("toggle");
+                        } else {
+                            alert('failed');
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    },
+
+                }); 
+
+            } else {
+                $.ajax({
+                    type: 'post',
+                    dataType: 'json',
+                    url: 'Items/Edit',
+                    data: { "json": ko.toJSON(item) },
+                    success: function (json) {
+                        if (json) {
+                            swal({
+                                type: "success",
+                                title: "Saved",
+                                text: item.Name() + " has been edited.",
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            $("#edit-modal").modal("toggle");
+                        } else {
+                            alert('failed');
+                        }
+                    },
+                    error: function () {
+                        alert("error");
+                    },
+
+                }); 
+            }
+
         } 
         
         // public void testComputed(CString test) { do stuff that... }

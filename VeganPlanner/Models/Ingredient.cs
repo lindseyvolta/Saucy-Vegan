@@ -14,5 +14,20 @@ namespace VeganPlanner.Models
 		public decimal Quantity { get; set; }
 		public string Units { get; set; }
 
+        public Ingredient Clone()
+        {
+            Ingredient new_ingredient = new Ingredient()
+            {
+                IngredientID = IngredientID,
+                item = item,
+                ItemID = ItemID,
+                RecipeID = RecipeID,
+                Quantity = Quantity,
+                Units = Units
+            };
+            //if (item != null)
+            //    new_ingredient.item = item;
+            return new_ingredient;
+        }
     }
 }
