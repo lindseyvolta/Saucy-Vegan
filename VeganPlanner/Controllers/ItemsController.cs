@@ -78,7 +78,6 @@ namespace VeganPlanner.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(string json)
         {
-
             Item item = Newtonsoft.Json.JsonConvert.DeserializeObject<Item>(json);
 
             if (!item.IsRecipe)
