@@ -1,11 +1,26 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var current_user = await UserManager.GetUserAsync(User);
+    var current_username = current_user.UserName;
+    bool isAdmin = false;
+    if (current_username == "lvolta@umich.edu" || current_username == "jvolta@vtechnologies.com")
+    {
+        isAdmin = true;
+    }
+}
+
+
 <head>
     <!-- Latest compiled and minified CSS -->
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/css/custom.css" />
     <script src="~/css/sweetalert-master/dist/sweetalert.min.js"></script>
     <link rel="stylesheet" type="text/css" href="~/css/sweetalert-master/dist/sweetalert.css">
 </head>
+
+
 
 <div id="FoodItems">
     <h2>Food Items</h2>
@@ -25,6 +40,11 @@
                 <th>Is a Recipe</th>
                 <th>Pantry Item</th>
                 <th></th>
+                @if (!isAdmin)
+                {
+                    <th></th>
+                }
+                
             </tr>
         </thead>
         <tbody data-bind="foreach: Items">
@@ -33,11 +53,26 @@
                 <td data-bind="text: Category"></td>
                 <td><input type="checkbox" data-bind="checked: IsRecipe" disabled /></td>
                 <td><input type="checkbox" data-bind="checked: IsPantryItem" disabled /></td>
-                <td>
-                    <a style="color: grey;" data-bind="click: function() { $root.showEdit($data); }">Edit</a> |
-                    <a style="color: grey;" data-bind="click: function() { $root.showDetails($data); }" class="">View</a> |
-                    <a style="color: grey;" data-bind="click: function() { $root.deleteConfirm($data); }" class=""> Delete</a>
+                <td class="text-center">
+                    
+                    @{if (isAdmin)
+                        {
+                        <a style="color: grey;" data-bind="click: function() { $root.showEdit($data);}">Edit</a>
+                        <a style="color: grey;" data-bind="click: function() { $root.showDetails($data); }" class="">View</a>
+                        <a style="color: grey;" data-bind="click: function() { $root.deleteConfirm($data); }" class="">Delete</a>
+                        }
+                        else
+                        {
+                        <a style="color: grey;" data-bind="visible: !CreatedByAdmin(), click: function() { $root.showEdit($data);}">Edit</a>
+                        <a style="color: grey;" data-bind="click: function() { $root.showDetails($data); }" class="">View</a>
+                        <a style="color: grey;" data-bind="visible: !CreatedByAdmin(), click: function() { $root.deleteConfirm($data); }" class="">Delete</a>
+                     } }
+
                 </td>
+                @if(!isAdmin){
+                    <td><p id="lock-icon" data-bind="visible: CreatedByAdmin" class="glyphicon glyphicon-lock" style=""></p></td>
+                }
+                
             </tr>
         </tbody>
     </table>

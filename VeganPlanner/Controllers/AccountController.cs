@@ -39,8 +39,7 @@ namespace VeganPlanner.Controllers
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
-            System.Security.Claims.ClaimsPrincipal currentUser = this.User;
-            var id = _userManager.GetUserId(User); // Get user id:
+           
         }
 
         //

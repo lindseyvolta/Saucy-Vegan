@@ -17,6 +17,14 @@ define([], function () {
         self.RecipeID = ko.observable();
         self.Recipe = new RecipeVM();
 
+        self.CreatedByAdmin = ko.pureComputed(function () {
+            if (self.UserID() == "lvolta@umich.edu" || self.UserID() == "jvolta@vtechnologies.com") {
+                return true;
+            } else {
+                return false;
+            }
+        });
+
         self.load = function (data) {
             self.ItemID(data.itemID);
             self.Name(data.name)
@@ -120,6 +128,7 @@ define([], function () {
         self.ItemsDropDown = ko.observableArray().extend({ deferred: true });
         self.CategoryDropDown = ko.observableArray().extend({ deferred: true });
         self.ModalTitle = ko.observable();
+
 
         self.UnitList = [
             { UnitName: "lb"},

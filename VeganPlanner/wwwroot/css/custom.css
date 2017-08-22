@@ -5,3 +5,11 @@ textarea {
     -moz-box-sizing: border-box; /* FF1+ */
     box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
 }
+#lock-icon {
+    vertical-align: middle;
+    border: none;
+    display: block;
+    text-align: center;
+    color: gray;
+    font-size: 12px;
+}

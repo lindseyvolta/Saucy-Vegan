@@ -15,9 +15,11 @@ namespace VeganPlanner.Controllers
     public class ItemsController : Controller
     {
         private readonly VeganPlannerContext _context;
+        private UserManager<ApplicationUser> _userManager;
 
-        public ItemsController(VeganPlannerContext context)
+        public ItemsController(VeganPlannerContext context, UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _context = context;    
         }
 
@@ -29,7 +31,9 @@ namespace VeganPlanner.Controllers
 
         public async Task<IActionResult> GetItems(string searchString, string itemCategory)
         {
-           
+            var user = await _userManager.GetUserAsync(User);
+            var username = user.UserName;
+
             var items = from m in _context.Item
                        .Include(c => c.recipe)
                              .ThenInclude(c => c.Ingredients)
@@ -37,6 +41,7 @@ namespace VeganPlanner.Controllers
                          .Include(c => c.recipe)
                              .ThenInclude(c => c.Instructions)
                          .AsNoTracking()
+                        where m.UserID == username || m.UserID == "lvolta@umich.edu" || m.UserID == "jvolta@vtechnologies.com"
                         select m;
 
             if (!String.IsNullOrEmpty(searchString))
@@ -112,7 +117,9 @@ namespace VeganPlanner.Controllers
 
             if (ModelState.IsValid)
             {
-                //TODO: SET USERID TO CURRENT USERNAME
+                var user = await _userManager.GetUserAsync(User);
+                var username = user.UserName;
+                item.UserID = username;
                 _context.Add(item);
                 await _context.SaveChangesAsync();
                 return Json("Created");
