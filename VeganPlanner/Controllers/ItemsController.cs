@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections;
 
+
 namespace VeganPlanner.Controllers
 {
     public class ItemsController : Controller
@@ -30,7 +31,7 @@ namespace VeganPlanner.Controllers
         {
            
             var items = from m in _context.Item
-                        .Include(c => c.recipe)
+                       .Include(c => c.recipe)
                              .ThenInclude(c => c.Ingredients)
                              .ThenInclude(c => c.item)
                          .Include(c => c.recipe)
@@ -44,7 +45,8 @@ namespace VeganPlanner.Controllers
             if (!String.IsNullOrEmpty(itemCategory))
                 items = items.Where(x => x.Category == itemCategory);
 
-            return Json(new { items = await items.ToListAsync() });
+                        
+            return Json(new { items = await items.OrderBy(x => x.Name).ToListAsync() });
         }
 
         public async Task<IActionResult> GetCategoriesDropDown()
@@ -55,7 +57,7 @@ namespace VeganPlanner.Controllers
                                 orderby m.Category
                                 select m.Category;
 
-            return Json(new { categoryQuery = await categoryQuery.ToListAsync() });
+            return Json(new { categoryQuery = await categoryQuery.Distinct().ToListAsync() });
         }
 
         public async Task<IActionResult> GetItemsDropDown()
@@ -65,8 +67,6 @@ namespace VeganPlanner.Controllers
                              where i.IsRecipe == false
                              orderby i.Name
                              select i;
-
-            //System.IO.File.WriteAllText("c:\\temp\\myfile.txt", "count = "+ itemsQuery.ToList().Count.ToString());
 
             return Json(new { itemsQuery = await itemsQuery.ToListAsync() });
 
@@ -80,12 +80,12 @@ namespace VeganPlanner.Controllers
         {
             Item item = Newtonsoft.Json.JsonConvert.DeserializeObject<Item>(json);
 
-            if (!item.IsRecipe)
-            {
+            if (item.IsRecipe == false)
+            { 
                 item.RecipeID = null;
                 item.recipe = null;
             }
-            /*else
+            else
             {
                 //add recipe to database and store corresponding recipe ID in item object
                 _context.Recipe.Add(item.recipe);
@@ -108,10 +108,11 @@ namespace VeganPlanner.Controllers
                 }
                 await _context.SaveChangesAsync();
 
-            }*/
+            }
 
             if (ModelState.IsValid)
             {
+                //TODO: SET USERID TO CURRENT USERNAME
                 _context.Add(item);
                 await _context.SaveChangesAsync();
                 return Json("Created");
@@ -136,7 +137,6 @@ namespace VeganPlanner.Controllers
                         {                            
                             i.item = _context.Item.Where(a => a.ItemID == i.ItemID).SingleOrDefault();                                
                         }
-                        //temp = temp + " ingredient item =" + i.item.Name + " units =" + i.Units + " qty = " + i.Quantity.ToString()+" ingredient id = "+i.IngredientID+Environment.NewLine;
                     }
 
                 } 
@@ -241,33 +241,8 @@ namespace VeganPlanner.Controllers
             catch (Exception e)
             {
                 temp = temp + "An error occurred: " + e.Message;   // How to promote this back to client?
-                //System.IO.File.WriteAllText("c:\\temp\\myfile.txt", temp);
                 return Json(temp);
             }
-        }
-
-        // GET: Items/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var item = await _context.Item
-                .Include(c => c.recipe)
-                    .ThenInclude(c => c.Ingredients)
-                .Include(c => c.recipe)
-                    .ThenInclude(c => c.Instructions)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ItemID == id);
-
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            return View(item);
         }
 
         // POST: Items/Delete/5
@@ -275,8 +250,15 @@ namespace VeganPlanner.Controllers
         public JsonResult DeleteConfirmed(string json)
         {
             Item item = Newtonsoft.Json.JsonConvert.DeserializeObject<Item>(json);
-       
-            if (item.IsRecipe)
+            var itemdb = _context.Item.Where(a => a.ItemID == item.ItemID)
+                                .Include(c => c.recipe)
+                                    .ThenInclude(c => c.Ingredients)
+                                    .ThenInclude(c => c.item)
+                                .Include(c => c.recipe)
+                                    .ThenInclude(c => c.Instructions)
+                                .SingleOrDefault();
+
+            if (itemdb.IsRecipe == true)
             {
                 Recipe recipe = _context.Recipe
                         .Where(m => m.RecipeID == item.RecipeID)
@@ -285,15 +267,17 @@ namespace VeganPlanner.Controllers
             }
             else
             {
-                var list = _context.Recipe.Where(r => r.Ingredients.Any(i => i.item == item))
+                var list = _context.Recipe.Where(r => r.Ingredients.Any(i => i.item == itemdb))
+                    .AsNoTracking()
                     .ToList();
+
                 if(list.Count > 0)
                 {
                     return Json("Error: Part of a Recipe");
                 }
             }
 
-            _context.Item.Remove(item);
+            _context.Item.Remove(itemdb);
             _context.SaveChanges();
             return Json("Delete confirmed");
         }

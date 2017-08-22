@@ -39,6 +39,8 @@ namespace VeganPlanner.Controllers
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
+            System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+            var id = _userManager.GetUserId(User); // Get user id:
         }
 
         //
@@ -53,6 +55,8 @@ namespace VeganPlanner.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
+
+
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 

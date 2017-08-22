@@ -34,7 +34,7 @@
                 <td><input type="checkbox" data-bind="checked: IsRecipe" disabled /></td>
                 <td><input type="checkbox" data-bind="checked: IsPantryItem" disabled /></td>
                 <td>
-                    <a style="color: grey;" data-bind="click: function() { $root.showEdit($data); }" class="">Edit</a> |
+                    <a style="color: grey;" data-bind="click: function() { $root.showEdit($data); }">Edit</a> |
                     <a style="color: grey;" data-bind="click: function() { $root.showDetails($data); }" class="">View</a> |
                     <a style="color: grey;" data-bind="click: function() { $root.deleteConfirm($data); }" class=""> Delete</a>
                 </td>
@@ -91,8 +91,10 @@
         </div>
     </div>
     <!--/View Modal-->
+
+
     <!--Edit Modal-->
-    <div id="edit-modal" class="modal fade" tabindex="-1" role="dialog" data-bind="with: EditItem">
+    <div id="edit-modal"  data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" data-bind="with: EditItem">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <h2 data-bind="text: $root.ModalTitle" class="text-center"></h2>
@@ -100,7 +102,7 @@
 
                 <dl class="dl-horizontal col-sm-offset-1 form-horizontal">
                     <dt class="control-label">Name</dt>
-                    <dd><input type="text" data-bind="value: Name" class="form-control"/> </dd>
+                    <dd><input type="text" data-bind="value: Name" class="form-control" /> </dd>
                     <dt class="control-label">Category</dt>
                     <dd><input type="text" data-bind="value: Category" class="form-control"/></dd>
                     <dt class="control-label">Serving Size</dt>
@@ -111,8 +113,8 @@
                     <dd><input type="number" data-bind="value: CaloriesPerServing" class="form-control"/></dd>
                     <dt class="control-label">Protein/Serving (g)</dt>
                     <dd><input type="number" data-bind="value: ProteinPerServing" class="form-control"/></dd>
-                    <dt>Is Recipe</dt>
-                    <dd><input type="checkbox" data-bind="checked: IsRecipe"/></dd>
+                    <dt style="margin-top: 4px;">Is Recipe</dt>
+                    <dd style="margin-top: 4px;"><input type="checkbox" data-bind="checked: IsRecipe"/></dd>
                     <dt>Is Pantry Item</dt>
                     <dd><input type="checkbox" data-bind="checked: IsPantryItem" /></dd>
                     <dt>Gluten Free</dt>
@@ -120,6 +122,14 @@
                 </dl>
 
                 <div data-bind="visible: IsRecipe">
+                    <dl class="dl-horizontal col-sm-offset-1 form-horizontal">
+                        <dt class="control-label">Recipe ID</dt>
+                        <dd><input class="form-control" data-bind="value: RecipeID" /></dd>
+                        <dt class="control-label">Notes</dt>
+                        <dd><input class="form-control" data-bind="value: Recipe.Notes" /></dd>
+                        <dt class="control-label">Servings</dt>
+                        <dd><input class="form-control" data-bind="value: Recipe.Servings" /></dd>
+                    </dl>
                     <table class="table table-condensed text-center">
                         <thead>
                             <tr>
@@ -130,15 +140,16 @@
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: Recipe.Ingredients">
-                            <tr>                             
-                                <td><select class="form-control" data-bind="options: $root.ItemsDropDown, optionsText: 'Name', optionsValue: 'ItemID', value: ItemID"></select></td> 
+                            <tr>  
+                                <!--TODO: FIX DROPDOWN FOR EDIT RECIPE-->
+                                <td><select class="form-control" data-bind="options: $root.ItemsDropDown, value: ItemID, optionsText: 'Name', optionsValue: 'ItemID'"></select></td> 
                                 <td><input class="form-control" type="number" data-bind="value: Quantity" /></td>
                                 <td><select class="form-control" data-bind="options: $root.UnitList, value: Units, optionsText: 'UnitName', optionsValue: 'UnitName'"></select></td>
                                 <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){$root.removeIngredient($data)}" style="text-decoration: none;"></a></td>
                             </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-sm btn-default" style="float: right; margin: 5px;" data-bind='click: function(){$root.addIngredient()}'>Add Ingredient</button>
+                    <button class="btn btn-sm btn-default" style=" margin: 5px;" data-bind='click: function(){$root.addIngredient()}'>Add Ingredient</button>
 
                     <table class="table table-condensed text-center">
                         <thead>
@@ -156,12 +167,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-sm btn-default" style="float: right; margin: 5px;" data-bind='click: function(){$root.addStep($data.Recipe.Instructions._latestValue.length)}'>Add Step</button>
+                    <div>
+                        <button class="btn btn-sm btn-default" style="margin: 5px;" data-bind='click: function(){$root.addStep($data.Recipe.Instructions._latestValue.length)}'>Add Step</button>
+                    </div>
 
                 </div>
-                <div class="modal-footer mt-3">
-                    <button type="button" class="btn btn-primary" data-bind="click: function(){ $root.saveEdit($data);}">Save</button>
+                <div class="modal-footer center-block">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bind="click: function(){ $root.saveEdit($data);}">Save</button>
                 </div>
             </div>
 

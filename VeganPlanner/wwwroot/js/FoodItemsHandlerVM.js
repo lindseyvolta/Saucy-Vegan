@@ -4,8 +4,8 @@ define([], function () {
         var self = this;
 
         self.ItemID = ko.observable();
-        self.Name = ko.observable();
-        self.IsRecipe = ko.observable();
+        self.Name = ko.observable().extend({ required: "Enter a Name" });
+        self.IsRecipe = ko.observable(false);
         self.ServingSize = ko.observable();
         self.ServingUnits = ko.observable();
         self.Category = ko.observable();
@@ -213,15 +213,17 @@ define([], function () {
                 
             }
 
-            self.EditItem(item);
+            
             self.ItemsDropDown.removeAll();
             self.GetItemsDropDownListNew();
-            
+            self.EditItem(item);
             $("#edit-modal").modal("show");
         }
 
         
+        
         self.saveEdit = function (item) {
+            //If we are creating a new food item
             if (item.ItemID._latestValue === undefined) {
                 $.ajax({
                     type: 'post',
@@ -238,6 +240,7 @@ define([], function () {
                                 showConfirmButton: false
                             });
                             $("#edit-modal").modal("toggle");
+                            self.populateData();                            
                         } else {
                             alert('failed');
                         }
@@ -264,6 +267,7 @@ define([], function () {
                                 showConfirmButton: false
                             });
                             $("#edit-modal").modal("toggle");
+                            self.populateData();  
                         } else {
                             alert('failed');
                         }
