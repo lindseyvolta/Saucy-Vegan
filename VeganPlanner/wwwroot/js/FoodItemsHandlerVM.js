@@ -127,14 +127,10 @@ define([], function () {
         self.DeleteItem = ko.observable();
         self.ItemsDropDown = ko.observableArray().extend({ deferred: true });
         self.CategoryDropDown = ko.observableArray().extend({ deferred: true });
+        self.AllCategoriesDropDown = ko.observableArray().extend({ deferred: true });
         self.ModalTitle = ko.observable();
 
-
-        self.UnitList = [
-            { UnitName: "lb"},
-            { UnitName: "Cup"},
-            { UnitName: "tsp"}, {UnitName: "Tbsp"}, {UnitName: "oz"}
-        ];    
+        self.UnitsDropDown = ko.observableArray().extend({ deferred: true });
 
         self.addIngredient = function () {
             self.EditItem().Recipe.Ingredients.push(new IngredientVM());
@@ -174,6 +170,14 @@ define([], function () {
 
                  
                      self.GetCategoriesDropDownList();
+
+                     if (self.AllCategoriesDropDown.length == 0) {
+                         self.GetAllCategoriesDropDownList();
+                     }
+
+                     if (self.UnitsDropDown.length == 0) {
+                         self.GetUnitsDropDownList();
+                     }
                 }
 
             });  
@@ -197,6 +201,36 @@ define([], function () {
                     }   
 
                     self.CategoryDropDown(array);                 
+                }
+            });
+        }
+
+        self.GetAllCategoriesDropDownList = function () {
+            $.ajax({
+                type: "GET",
+                url: "Items/GetAllCategoriesDropDown",
+                success: function (data) {
+                    var array = [];
+                    for (var i = 0; i < data.categorylist.length; i += 1) {
+                        array.push(data.categorylist[i]);
+                    }
+
+                    self.AllCategoriesDropDown(array);
+                }
+            });
+        }
+
+        self.GetUnitsDropDownList = function () {
+            $.ajax({
+                type: "GET",
+                url: "Items/GetUnitsDropDown",
+                success: function (data) {
+                    var array = [];
+                    for (var i = 0; i < data.unitlist.length; i += 1) {
+                        array.push(data.unitlist[i]);
+                    }
+
+                    self.UnitsDropDown(array);
                 }
             });
         }

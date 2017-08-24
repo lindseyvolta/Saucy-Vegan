@@ -139,7 +139,7 @@
                     <dt class="control-label">Name</dt>
                     <dd><input type="text" data-bind="value: Name" class="form-control" /> </dd>
                     <dt class="control-label">Category</dt>
-                    <dd><input type="text" data-bind="value: Category" class="form-control"/></dd>
+                    <dd><select class="form-control" data-bind="options: $root.AllCategoriesDropDown, value: Category "></select></dd>
                     <dt class="control-label">Serving Size</dt>
                     <dd><input type="number" data-bind="value: ServingSize" class="form-control"/></dd>
                     <dt class="control-label">Serving Units</dt>
@@ -176,10 +176,9 @@
                         </thead>
                         <tbody data-bind="foreach: Recipe.Ingredients">
                             <tr>  
-                                <!--TODO: FIX DROPDOWN FOR EDIT RECIPE-->
                                 <td><select class="form-control" data-bind="options: $root.ItemsDropDown, value: ItemID, optionsText: 'Name', optionsValue: 'ItemID'"></select></td> 
                                 <td><input class="form-control" type="number" data-bind="value: Quantity" /></td>
-                                <td><select class="form-control" data-bind="options: $root.UnitList, value: Units, optionsText: 'UnitName', optionsValue: 'UnitName'"></select></td>
+                                <td><select class="form-control" data-bind="options: $root.UnitsDropDown, value: Units "></select></td>
                                 <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){$root.removeIngredient($data)}" style="text-decoration: none;"></a></td>
                             </tr>
                         </tbody>
@@ -196,7 +195,7 @@
                         </thead>
                         <tbody data-bind="foreach: Recipe.Instructions">
                             <tr>
-                                <td data-bind="text: Order"></td>
+                                <td data-bind="text: $index() + 1"></td>                                
                                 <td><textarea name="" id="" rows="3" class="form-control" style="width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;" data-bind="value: Description"></textarea></td>
                                 <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){ $root.removeStep($data)}" style="text-decoration: none;"></a></td>
                             </tr>

@@ -8,6 +8,8 @@ using System;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections;
+using System.Collections.Generic;
+using VeganPlanner.Helpers;
 
 
 namespace VeganPlanner.Controllers
@@ -48,9 +50,8 @@ namespace VeganPlanner.Controllers
                 items = items.Where(s => s.Name.Contains(searchString));
 
             if (!String.IsNullOrEmpty(itemCategory))
-                items = items.Where(x => x.Category == itemCategory);
-
-                        
+                items = items.Where(x => x.Category == itemCategory);           
+                
             return Json(new { items = await items.OrderBy(x => x.Name).ToListAsync() });
         }
 
@@ -65,6 +66,11 @@ namespace VeganPlanner.Controllers
             return Json(new { categoryQuery = await categoryQuery.Distinct().ToListAsync() });
         }
 
+        public async Task<IActionResult> GetAllCategoriesDropDown()
+        {           
+            return Json(new { categorylist = Shared.CategoryList.ToList() });
+        }
+
         public async Task<IActionResult> GetItemsDropDown()
         {
             var itemsQuery = from i in _context.Item
@@ -74,6 +80,12 @@ namespace VeganPlanner.Controllers
                              select i;
 
             return Json(new { itemsQuery = await itemsQuery.ToListAsync() });
+
+        }
+
+        public async Task<IActionResult> GetUnitsDropDown()
+        {
+            return Json(new { unitlist = Shared.Units.UnitList.ToList() } );
 
         }
 
@@ -181,7 +193,8 @@ namespace VeganPlanner.Controllers
 
                 if (item.IsRecipe)
                 {
-                    _context.Entry(itemdb.recipe).State = EntityState.Modified;
+                    _context.Entry(itemdb.recipe).CurrentValues.SetValues(item.recipe);
+
                     foreach (Ingredient i in item.recipe.Ingredients)
                     {
                         var currIngredient = itemdb.recipe.Ingredients.FirstOrDefault(x => x.IngredientID == i.IngredientID);
