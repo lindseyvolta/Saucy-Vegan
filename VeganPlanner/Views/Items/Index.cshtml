@@ -25,6 +25,7 @@
 <div id="FoodItems">
     <h2>Food Items</h2>
     <p class="lead">A compilation of all the ingredients and recipes to use in your Saucy Vegan meals!</p>
+    <hr />
     <p class="my-3">
         <input style="float:left" class="form-control" type="text" data-bind="textInput: SearchString" placeholder="Search for...">
         <button class="btn btn-default" data-bind="click: function () { populateData(); }" style="height:34px; width:100px; padding: 2px 4px;">Go!</button>
@@ -72,7 +73,6 @@
                 @if(!isAdmin){
                     <td><p id="lock-icon" data-bind="visible: CreatedByAdmin" class="glyphicon glyphicon-lock" style=""></p></td>
                 }
-                
             </tr>
         </tbody>
     </table>
@@ -135,19 +135,19 @@
                     <dt class="control-label">Name</dt>
                     <dd><input type="text" data-bind="value: Name" class="form-control" /> </dd>
                     <dt class="control-label">Category</dt>
-                    <dd><input type="text" data-bind="value: Category" class="form-control"/></dd>
+                    <dd><select data-bind="value: Category, options: $root.AllCategoriesDropDown" class="form-control"></select></dd>
                     <dt class="control-label">Serving Size</dt>
                     <dd><input type="number" data-bind="value: ServingSize" class="form-control"/></dd>
                     <dt class="control-label">Serving Units</dt>
-                    <dd><input type="text" data-bind="value: ServingUnits" class="form-control"/></dd>
+                    <dd><select data-bind="value: ServingUnits, options: $root.UnitsDropDown" class="form-control"/></dd>
                     <dt class="control-label">Calories/Serving (cals)</dt>
                     <dd><input type="number" data-bind="value: CaloriesPerServing" class="form-control"/></dd>
                     <dt class="control-label">Protein/Serving (g)</dt>
                     <dd><input type="number" data-bind="value: ProteinPerServing" class="form-control"/></dd>
                     <dt style="margin-top: 4px;">Is Recipe</dt>
-                    <dd style="margin-top: 4px;"><input type="checkbox" data-bind="checked: IsRecipe"/></dd>
+                    <dd style="margin-top: 4px;"><input type="checkbox" data-bind="checked: IsRecipe, disable: IsPantryItem"/></dd>
                     <dt>Is Pantry Item</dt>
-                    <dd><input type="checkbox" data-bind="checked: IsPantryItem" /></dd>
+                    <dd><input type="checkbox" data-bind="checked: IsPantryItem, disable: IsRecipe" /></dd>
                     <dt>Gluten Free</dt>
                     <dd><input type="checkbox" data-bind="checked: IsGF" /></dd>
                 </dl>
@@ -172,10 +172,9 @@
                         </thead>
                         <tbody data-bind="foreach: Recipe.Ingredients">
                             <tr>  
-                                <!--TODO: FIX DROPDOWN FOR EDIT RECIPE-->
                                 <td><select class="form-control" data-bind="options: $root.ItemsDropDown, value: ItemID, optionsText: 'Name', optionsValue: 'ItemID'"></select></td> 
                                 <td><input class="form-control" type="number" data-bind="value: Quantity" /></td>
-                                <td><select class="form-control" data-bind="options: $root.UnitList, value: Units, optionsText: 'UnitName', optionsValue: 'UnitName'"></select></td>
+                                <td><select class="form-control" data-bind="options: $root.UnitsDropDown, value: Units "></select></td>
                                 <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){$root.removeIngredient($data)}" style="text-decoration: none;"></a></td>
                             </tr>
                         </tbody>
@@ -192,7 +191,7 @@
                         </thead>
                         <tbody data-bind="foreach: Recipe.Instructions">
                             <tr>
-                                <td data-bind="text: Order"></td>
+                                <td data-bind="text: $index + 1"></td>
                                 <td><textarea name="" id="" rows="3" class="form-control" style="width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;" data-bind="value: Description"></textarea></td>
                                 <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){ $root.removeStep($data)}" style="text-decoration: none;"></a></td>
                             </tr>

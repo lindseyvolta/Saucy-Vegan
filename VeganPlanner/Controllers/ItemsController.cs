@@ -8,7 +8,8 @@ using System;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections;
-
+using System.Collections.Generic;
+using VeganPlanner.Helpers;
 
 namespace VeganPlanner.Controllers
 {
@@ -53,6 +54,16 @@ namespace VeganPlanner.Controllers
                         
             return Json(new { items = await items.OrderBy(x => x.Name).ToListAsync() });
         }
+
+        public async Task<IActionResult> GetAllCategoriesDropDown(){           
+             return Json(new { categorylist = Shared.CategoryList.ToList()});
+         }
+
+        public async Task<IActionResult> GetUnitsDropDown()
+        {
+            return Json(new { unitlist = Shared.Units.UnitList.ToList() });
+        }
+ 
 
         public async Task<IActionResult> GetCategoriesDropDown()
         {

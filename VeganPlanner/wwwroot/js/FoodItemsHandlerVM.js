@@ -128,13 +128,8 @@ define([], function () {
         self.ItemsDropDown = ko.observableArray().extend({ deferred: true });
         self.CategoryDropDown = ko.observableArray().extend({ deferred: true });
         self.ModalTitle = ko.observable();
-
-
-        self.UnitList = [
-            { UnitName: "lb"},
-            { UnitName: "Cup"},
-            { UnitName: "tsp"}, {UnitName: "Tbsp"}, {UnitName: "oz"}
-        ];    
+        self.AllCategoriesDropDown = ko.observableArray().extend({ deferred: true });
+        self.UnitsDropDown = ko.observableArray().extend({ deferred: true });    
 
         self.addIngredient = function () {
             self.EditItem().Recipe.Ingredients.push(new IngredientVM());
@@ -154,7 +149,7 @@ define([], function () {
             self.EditItem().Recipe.Instructions.remove(instruction);
         };
 
-        self.populateData = function (element) {            
+        self.populateData = function (element) {
             $.ajax({
                 type: "GET",
                 url: "Items/GetItems",
@@ -163,20 +158,27 @@ define([], function () {
 
                     self.Items.removeAll();
 
-                    for (var i = 0; i < data.items.length; i += 1){
-                         var anitem = new ItemVM();
-                         anitem.load(data.items[i])
-                         self.Items.push(anitem);
-                     }
-                    
-                     if (element && !ko.dataFor(element))
+                    for (var i = 0; i < data.items.length; i += 1) {
+                        var anitem = new ItemVM();
+                        anitem.load(data.items[i])
+                        self.Items.push(anitem);
+                    }
+
+                    if (element && !ko.dataFor(element))
                         ko.applyBindings(self, element);
 
-                 
-                     self.GetCategoriesDropDownList();
+                    self.GetCategoriesDropDownList();
+
+                    if (self.AllCategoriesDropDown.length == 0) {
+                        self.GetAllCategoriesDropDownList();
+                    }
+
+                    if (self.UnitsDropDown.length == 0) {
+                        self.GetUnitsDropDownList();
+                    }
                 }
 
-            });  
+            });
         }
 
 
@@ -197,6 +199,36 @@ define([], function () {
                     }   
 
                     self.CategoryDropDown(array);                 
+                }
+            });
+        }
+
+        self.GetAllCategoriesDropDownList = function () {
+            $.ajax({
+                type: "GET",
+                url: "Items/GetAllCategoriesDropDown",
+                success: function (data) {
+                    var array = [];
+                    for (var i = 0; i < data.categorylist.length; i += 1) {
+                        array.push(data.categorylist[i]);
+                    }
+
+                    self.AllCategoriesDropDown(array);
+                }
+            });
+        }
+
+        self.GetUnitsDropDownList = function () {
+            $.ajax({
+                type: "GET",
+                url: "Items/GetUnitsDropDown",
+                success: function (data) {
+                    var array = [];
+                    for (var i = 0; i < data.unitlist.length; i += 1) {
+                        array.push(data.unitlist[i]);
+                    }
+
+                    self.UnitsDropDown(array);
                 }
             });
         }
