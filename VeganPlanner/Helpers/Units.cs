@@ -8,7 +8,6 @@ namespace VeganPlanner.Helpers
 {
     public class Units
     {
-        
         private List<string> fUnitList = new List<string>() { "lb", "Cup", "tsp", "Tbsp", "oz" };
         public ReadOnlyCollection<string> UnitList
         {
@@ -19,6 +18,5 @@ namespace VeganPlanner.Helpers
         // and to roll up units to largest possible unit
 
     }
-
 
 }

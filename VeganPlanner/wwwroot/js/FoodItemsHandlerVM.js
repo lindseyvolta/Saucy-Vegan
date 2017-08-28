@@ -129,8 +129,8 @@ define([], function () {
         self.CategoryDropDown = ko.observableArray().extend({ deferred: true });
         self.AllCategoriesDropDown = ko.observableArray().extend({ deferred: true });
         self.ModalTitle = ko.observable();
-
         self.UnitsDropDown = ko.observableArray().extend({ deferred: true });
+
 
         self.addIngredient = function () {
             self.EditItem().Recipe.Ingredients.push(new IngredientVM());
@@ -150,7 +150,7 @@ define([], function () {
             self.EditItem().Recipe.Instructions.remove(instruction);
         };
 
-        self.populateData = function (element) {            
+        self.populateData = function (element) {
             $.ajax({
                 type: "GET",
                 url: "Items/GetItems",
@@ -159,16 +159,16 @@ define([], function () {
 
                     self.Items.removeAll();
 
-                    for (var i = 0; i < data.items.length; i += 1){
-                         var anitem = new ItemVM();
-                         anitem.load(data.items[i])
-                         self.Items.push(anitem);
-                     }
-                    
-                     if (element && !ko.dataFor(element))
+                    for (var i = 0; i < data.items.length; i += 1) {
+                        var anitem = new ItemVM();
+                        anitem.load(data.items[i])
+                        self.Items.push(anitem);
+                    }
+
+                    if (element && !ko.dataFor(element))
                         ko.applyBindings(self, element);
 
-                 
+               
                      self.GetCategoriesDropDownList();
 
                      if (self.AllCategoriesDropDown.length == 0) {
@@ -180,7 +180,7 @@ define([], function () {
                      }
                 }
 
-            });  
+            });
         }
 
 
