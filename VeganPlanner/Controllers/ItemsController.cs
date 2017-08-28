@@ -181,7 +181,7 @@ namespace VeganPlanner.Controllers
 
                 if (item.IsRecipe)
                 {
-                    _context.Entry(itemdb.recipe).State = EntityState.Modified;
+                    _context.Entry(itemdb.recipe).CurrentValues.SetValues(item.recipe);
                     foreach (Ingredient i in item.recipe.Ingredients)
                     {
                         var currIngredient = itemdb.recipe.Ingredients.FirstOrDefault(x => x.IngredientID == i.IngredientID);
