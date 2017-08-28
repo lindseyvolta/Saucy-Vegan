@@ -135,7 +135,7 @@
                     <dt class="control-label">Name</dt>
                     <dd><input type="text" data-bind="value: Name" class="form-control" /> </dd>
                     <dt class="control-label">Category</dt>
-                    <dd><select data-bind="value: Category, options: $root.AllCategoriesDropDown" class="form-control"></select></dd>
+                    <dd><select class="form-control" data-bind="options: $root.AllCategoriesDropDown, value: Category "></select></dd>
                     <dt class="control-label">Serving Size</dt>
                     <dd><input type="number" data-bind="value: ServingSize" class="form-control"/></dd>
                     <dt class="control-label">Serving Units</dt>
@@ -191,7 +191,7 @@
                         </thead>
                         <tbody data-bind="foreach: Recipe.Instructions">
                             <tr>
-                                <td data-bind="text: $index + 1"></td>
+                                <td data-bind="text: $index() + 1"></td>                                
                                 <td><textarea name="" id="" rows="3" class="form-control" style="width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;" data-bind="value: Description"></textarea></td>
                                 <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){ $root.removeStep($data)}" style="text-decoration: none;"></a></td>
                             </tr>

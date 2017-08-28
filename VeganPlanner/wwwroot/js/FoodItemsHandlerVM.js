@@ -127,9 +127,10 @@ define([], function () {
         self.DeleteItem = ko.observable();
         self.ItemsDropDown = ko.observableArray().extend({ deferred: true });
         self.CategoryDropDown = ko.observableArray().extend({ deferred: true });
-        self.ModalTitle = ko.observable();
         self.AllCategoriesDropDown = ko.observableArray().extend({ deferred: true });
-        self.UnitsDropDown = ko.observableArray().extend({ deferred: true });    
+        self.ModalTitle = ko.observable();
+        self.UnitsDropDown = ko.observableArray().extend({ deferred: true });
+
 
         self.addIngredient = function () {
             self.EditItem().Recipe.Ingredients.push(new IngredientVM());
@@ -167,15 +168,16 @@ define([], function () {
                     if (element && !ko.dataFor(element))
                         ko.applyBindings(self, element);
 
-                    self.GetCategoriesDropDownList();
+               
+                     self.GetCategoriesDropDownList();
 
-                    if (self.AllCategoriesDropDown.length == 0) {
-                        self.GetAllCategoriesDropDownList();
-                    }
+                     if (self.AllCategoriesDropDown.length == 0) {
+                         self.GetAllCategoriesDropDownList();
+                     }
 
-                    if (self.UnitsDropDown.length == 0) {
-                        self.GetUnitsDropDownList();
-                    }
+                     if (self.UnitsDropDown.length == 0) {
+                         self.GetUnitsDropDownList();
+                     }
                 }
 
             });
