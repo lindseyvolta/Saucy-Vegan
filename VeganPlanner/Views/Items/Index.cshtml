@@ -1,0 +1,217 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var current_user = await UserManager.GetUserAsync(User);
+    var current_username = current_user.UserName;
+    bool isAdmin = false;
+    if (current_username == "lvolta@umich.edu" || current_username == "jvolta@vtechnologies.com")
+    {
+        isAdmin = true;
+    }
+}
+
+
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/custom.css" />
+    <script src="~/css/sweetalert-master/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/css/sweetalert-master/dist/sweetalert.css">
+</head>
+
+
+
+<div id="FoodItems">
+    <h2>Food Items</h2>
+    <p class="lead">Ingredients and recipes to use in your Saucy Vegan meals!</p>
+    <hr />
+    <p class="my-3">
+        <input style="float:left" class="form-control" type="text" data-bind="textInput: SearchString" placeholder="Search for...">
+        <button class="btn btn-default" data-bind="click: function () { populateData(); }" style="height:34px; width:100px; padding: 2px 4px;">Go!</button>
+        <select data-bind="options: CategoryDropDown, optionsCaption: 'All', value: ItemCategory " style="float: left; height:34px; padding: 2px 4px; border-radius: 3px 3px 3px 3px; border-color: lightgrey"></select>
+        <button class="btn btn-success" data-bind="click: function () { $root.showEdit() }" style="float:right; height:34px; width:100px; padding: 2px 4px;">New Item</button>
+    </p>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Is a Recipe</th>
+                <th>Pantry Item</th>
+                <th></th>
+                @if (!isAdmin)
+                {
+                    <th></th>
+                }
+                
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: Items">
+            <tr>
+                <td data-bind="text: Name"></td>
+                <td data-bind="text: Category"></td>
+                <td><input type="checkbox" data-bind="checked: IsRecipe" disabled /></td>
+                <td><input type="checkbox" data-bind="checked: IsPantryItem" disabled /></td>
+                <td class="text-center">
+                    
+                    @{if (isAdmin)
+                        {
+                        <a style="color: grey;" data-bind="click: function() { $root.showEdit($data);}">Edit</a>
+                        <a style="color: grey;" data-bind="click: function() { $root.showDetails($data); }" class="">View</a>
+                        <a style="color: grey;" data-bind="click: function() { $root.deleteConfirm($data); }" class="">Delete</a>
+                        }
+                        else
+                        {
+                        <a style="color: grey;" data-bind="visible: !CreatedByAdmin(), click: function() { $root.showEdit($data);}">Edit</a>
+                        <a style="color: grey;" data-bind="click: function() { $root.showDetails($data); }" class="">View</a>
+                        <a style="color: grey;" data-bind="visible: !CreatedByAdmin(), click: function() { $root.deleteConfirm($data); }" class="">Delete</a>
+                     } }
+
+                </td>
+                @if(!isAdmin){
+                    <td><p id="lock-icon" data-bind="visible: CreatedByAdmin" class="glyphicon glyphicon-lock" style=""></p></td>
+                }
+            </tr>
+        </tbody>
+    </table>
+
+    <!--View Modal-->
+    <div id="details-modal" class="modal fade" tabindex="-1" role="dialog" data-bind="with: DetailItem">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <h2 data-bind="text: Name" class="text-center"></h2>
+                <hr />
+                <dl class="dl-horizontal col-sm-offset-1">
+                    <dt>Category</dt>
+                    <dd data-bind="text: Category"></dd>
+                    <dt>Serving Size</dt>
+                    <dd data-bind="text: ServingSize() + ' ' + ServingUnits()"></dd>
+                    <dt>Calories/Serving (cals)</dt>
+                    <dd data-bind="text: CaloriesPerServing"></dd>
+                    <dt>Protein/Serving (g)</dt>
+                    <dd data-bind="text: ProteinPerServing"></dd>
+                    <dt>Is Recipe</dt>
+                    <dd><input type="checkbox" data-bind="checked: IsRecipe" disabled /></dd>
+                    <dt>Is Pantry Item</dt>
+                    <dd><input type="checkbox" data-bind="checked: IsPantryItem" disabled /></dd>
+                    <dt>Gluten Free</dt>
+                    <dd><input type="checkbox" data-bind="checked: IsGF" disabled /></dd>
+                </dl>
+
+                <div data-bind="visible: IsRecipe">
+                    <dl class="dl-horizontal col-sm-offset-1">
+                        <dt>Recipe ID</dt>
+                        <dd data-bind="text: RecipeID"></dd>
+                        <dt>Notes</dt>
+                        <dd data-bind="text: Recipe.Notes"></dd>
+                        <dt>Servings</dt>
+                        <dd data-bind="text: Recipe.Servings"></dd>
+                    </dl>
+                    <h4>Ingredients</h4>
+                    <ul data-bind="foreach: Recipe.Ingredients">
+                        <li data-bind="text: $data.Quantity() + '  ' + $data.Units() + '  ' + $data.Item().Name() "></li>
+                    </ul>
+                    <h4>Instructions</h4>
+                    <ol data-bind="foreach: Recipe.Instructions">
+                        <li data-bind="text: Description"></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/View Modal-->
+
+
+    <!--Edit Modal-->
+    <div id="edit-modal"  data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" data-bind="with: EditItem">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <h2 data-bind="text: $root.ModalTitle" class="text-center"></h2>
+                <hr />
+
+                <dl class="dl-horizontal col-sm-offset-1 form-horizontal">
+                    <dt class="control-label">Name</dt>
+                    <dd><input type="text" data-bind="value: Name" class="form-control" /> </dd>
+                    <dt class="control-label">Category</dt>
+                    <dd><select class="form-control" data-bind="options: $root.AllCategoriesDropDown, value: Category "></select></dd>
+                    <dt class="control-label">Serving Size</dt>
+                    <dd><input type="number" data-bind="value: ServingSize" class="form-control"/></dd>
+                    <dt class="control-label">Serving Units</dt>
+                    <dd><select data-bind="value: ServingUnits, options: $root.UnitsDropDown" class="form-control"/></dd>
+                    <dt class="control-label">Calories/Serving (cals)</dt>
+                    <dd><input type="number" data-bind="value: CaloriesPerServing" class="form-control"/></dd>
+                    <dt class="control-label">Protein/Serving (g)</dt>
+                    <dd><input type="number" data-bind="value: ProteinPerServing" class="form-control"/></dd>
+                    <dt style="margin-top: 4px;">Is Recipe</dt>
+                    <dd style="margin-top: 4px;"><input type="checkbox" data-bind="checked: IsRecipe, disable: IsPantryItem"/></dd>
+                    <dt>Is Pantry Item</dt>
+                    <dd><input type="checkbox" data-bind="checked: IsPantryItem, disable: IsRecipe" /></dd>
+                    <dt>Gluten Free</dt>
+                    <dd><input type="checkbox" data-bind="checked: IsGF" /></dd>
+                </dl>
+
+                <div data-bind="visible: IsRecipe">
+                    <dl class="dl-horizontal col-sm-offset-1 form-horizontal">
+                        <dt class="control-label">Recipe ID</dt>
+                        <dd><input class="form-control" data-bind="value: RecipeID" /></dd>
+                        <dt class="control-label">Notes</dt>
+                        <dd><input class="form-control" data-bind="value: Recipe.Notes" /></dd>
+                        <dt class="control-label">Servings</dt>
+                        <dd><input class="form-control" data-bind="value: Recipe.Servings" /></dd>
+                    </dl>
+                    <table class="table table-condensed text-center">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Ingredient</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-center">Units</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: Recipe.Ingredients">
+                            <tr>  
+                                <td><select class="form-control" data-bind="options: $root.ItemsDropDown, value: ItemID, optionsText: 'Name', optionsValue: 'ItemID'"></select></td> 
+                                <td><input class="form-control" type="number" data-bind="value: Quantity" /></td>
+                                <td><select class="form-control" data-bind="options: $root.UnitsDropDown, value: Units "></select></td>
+                                <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){$root.removeIngredient($data)}" style="text-decoration: none;"></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-sm btn-default" style=" margin: 5px;" data-bind='click: function(){$root.addIngredient()}'>Add Ingredient</button>
+
+                    <table class="table table-condensed text-center">
+                        <thead>
+                            <tr>
+                                <th class="col-md-1 text-center"></th>
+                                <th class="text-center">Instructions</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: Recipe.Instructions">
+                            <tr>
+                                <td data-bind="text: $index() + 1"></td>                                
+                                <td><textarea name="" id="" rows="3" class="form-control" style="width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;" data-bind="value: Description"></textarea></td>
+                                <td><a class="glyphicon glyphicon-remove-circle" data-bind="click: function(){ $root.removeStep($data)}" style="text-decoration: none;"></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <button class="btn btn-sm btn-default" style="margin: 5px;" data-bind='click: function(){$root.addStep($data.Recipe.Instructions._latestValue.length)}'>Add Step</button>
+                    </div>
+
+                </div>
+                <div class="modal-footer center-block">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bind="click: function(){ $root.saveEdit($data);}">Save</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--/Edit Modal-->
+
+
+
+</div>
