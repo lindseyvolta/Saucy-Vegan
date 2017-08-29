@@ -103,6 +103,7 @@ define([], function () {
         self.Order = ko.observable();
 
         self.load = function (data) {
+
             self.StepID(data.stepID);
             self.RecipeID(data.recipeID);
             self.Description(data.description);
