@@ -94,8 +94,6 @@ define([], function () {
         }
     }
 
-
-
     function StepVM() {
         var self = this;
 
