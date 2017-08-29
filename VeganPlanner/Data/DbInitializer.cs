@@ -120,6 +120,7 @@ namespace VeganPlanner.Data
                 new Meal{NickName = "Guilt-Free Pizza", CaloriesPerServing = 600, ProteinPerServing = 30, Notes = "Good for a quick and easy weeknight dinner.", UserID = "lvolta@umich.edu"}
             };
 
+
             foreach(Meal m in meals)
             {
                 context.Meal.Add(m);
