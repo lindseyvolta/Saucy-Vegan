@@ -16,6 +16,7 @@
             im.load(data.foodItem);
             self.FoodItem(im);
         }
+
     }
 
     function MealVM() {
