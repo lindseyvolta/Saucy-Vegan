@@ -1,5 +1,5 @@
 define(["js/ItemVM","js/RecipeVM","js/IngredientVM","js/StepVM"], function (ItemVM,RecipeVM,IngredientVM,StepVM) {
-
+    
     /**
      * View model that handles the "My Kitchen -> Food Items" view.
      */

@@ -1,5 +1,5 @@
-﻿
-define(["js/ItemVM"], function (ItemVM) {
+
+define([], function () {
 
     function IngredientVM() {
         var self = this;
@@ -13,6 +13,7 @@ define(["js/ItemVM"], function (ItemVM) {
 
         self.load = function (data) {
             self.IngredientID(data.ingredientID);
+            var ItemVM = require("js/ItemVM");
             var im = new ItemVM();
             im.load(data.item);
             self.Item(im)
