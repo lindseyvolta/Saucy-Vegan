@@ -16,7 +16,11 @@
     <Content Include="wwwroot\css\bootstrap-3.3.7-dist\css\custom.css" />
     <Content Include="wwwroot\css\custom.css" />
     <Content Include="wwwroot\js\FoodItemsHandlerVM.js" />
+    <Content Include="wwwroot\js\IngredientVM.js" />
+    <Content Include="wwwroot\js\ItemVM.js" />
+    <Content Include="wwwroot\js\RecipeVM.js" />
     <Content Include="wwwroot\js\MealsHandlerVM.js" />
+    <Content Include="wwwroot\js\StepVM.js" />
     <Content Include="wwwroot\lib\knockout\dist\knockout.debug.js" />
   </ItemGroup>
   <ItemGroup>
