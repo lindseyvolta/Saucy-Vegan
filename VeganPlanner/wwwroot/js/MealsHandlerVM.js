@@ -19,6 +19,7 @@
 
     }
 
+
     function MealVM() {
         var self = this;
 
