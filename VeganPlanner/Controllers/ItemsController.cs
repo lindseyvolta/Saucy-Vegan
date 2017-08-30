@@ -1,15 +1,12 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using VeganPlanner.Models;
-using System;
-using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections;
-using System.Collections.Generic;
 using VeganPlanner.Helpers;
+using VeganPlanner.Models;
 
 namespace VeganPlanner.Controllers
 {
@@ -54,16 +51,6 @@ namespace VeganPlanner.Controllers
             return Json(new { items = await items.OrderBy(x => x.Name).ToListAsync() });
         }
 
-        public async Task<IActionResult> GetAllCategoriesDropDown(){           
-             return Json(new { categorylist = Shared.CategoryList.ToList()});
-         }
-
-        public async Task<IActionResult> GetUnitsDropDown()
-        {
-            return Json(new { unitlist = Shared.Units.UnitList.ToList() });
-        }
- 
-
         public async Task<IActionResult> GetCategoriesDropDown()
         {
             // Use LINQ to get list of genres.
@@ -94,8 +81,7 @@ namespace VeganPlanner.Controllers
 
         public async Task<IActionResult> GetUnitsDropDown()
         {
-            return Json(new { unitlist = Shared.Units.UnitList.ToList() } );
-
+            return Json(new { unitlist = Shared.Units.UnitList.ToList() });
         }
 
         // POST: Items/Create

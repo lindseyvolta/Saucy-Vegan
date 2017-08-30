@@ -14,6 +14,8 @@ namespace VeganPlanner.Models
         public DbSet<VeganPlanner.Models.Ingredient> Ingredient { get; set; }
         public DbSet<VeganPlanner.Models.Step> Step { get; set; }
         public DbSet<VeganPlanner.Models.Recipe> Recipe { get; set; }
+        public DbSet<VeganPlanner.Models.Meal> Meal { get; set; }
+        public DbSet<VeganPlanner.Models.MealComponent> MealComponent { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +23,9 @@ namespace VeganPlanner.Models
             modelBuilder.Entity<Ingredient>().ToTable("Ingredient");
             modelBuilder.Entity<Step>().ToTable("Step");
             modelBuilder.Entity<Recipe>().ToTable("Recipe");
+            modelBuilder.Entity<Meal>().ToTable("Meal");
+            modelBuilder.Entity<MealComponent>().ToTable("MealComponent");
         }
+
     }
 }

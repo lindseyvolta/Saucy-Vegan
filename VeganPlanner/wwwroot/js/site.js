@@ -1,4 +1,4 @@
-﻿require(["js/FoodItemsHandlerVM"], function (FoodItemsHandlerVM) {
+﻿require(["js/FoodItemsHandlerVM", "js/MealsHandlerVM"], function (FoodItemsHandlerVM, MealsHandlerVM) {
     /**
      * Populates knockout data in the specified element with a view model.
      * @param {String} elementName - The name of the element to populate.
@@ -17,5 +17,6 @@
     // When the document loads, apply appropriate view models to their elements.
     $(document).ready(function () {
         populateData("FoodItems", FoodItemsHandlerVM);
+        populateData("Meals", MealsHandlerVM);
     });
 });

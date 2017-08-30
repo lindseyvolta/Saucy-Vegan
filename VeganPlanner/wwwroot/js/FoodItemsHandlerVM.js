@@ -57,14 +57,12 @@ define([], function () {
             self.RecipeID(data.recipeID);
             self.Notes(data.notes);
             self.Servings(data.servings);
-            //self.Ingredients(data.ingredients);
 
             for (var i = 0; i < data.ingredients.length; i += 1) {
                 var anIngredient = new IngredientVM();
                 anIngredient.load(data.ingredients[i]);
                 self.Ingredients.push(anIngredient);
             }
-            //self.Instructions(data.instructions);
 
             for (var i = 0; i < data.instructions.length; i += 1) {
                 var anInstruction = new StepVM();
@@ -105,6 +103,7 @@ define([], function () {
         self.Order = ko.observable();
 
         self.load = function (data) {
+
             self.StepID(data.stepID);
             self.RecipeID(data.recipeID);
             self.Description(data.description);
@@ -114,7 +113,8 @@ define([], function () {
     /**
      * View model that handles the "My Kitchen -> Food Items" view.
      */
-    function FoodItemsHandlerVM() {
+    function FoodItemsHandlerVM()
+    {
         var self = this;
 
         window.instance = self;
