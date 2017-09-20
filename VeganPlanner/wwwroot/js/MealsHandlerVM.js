@@ -12,11 +12,11 @@
             self.MealComponentID(data.mealComponentID);
             self.MealID(data.mealID);
             self.FoodItemID(data.foodItemID);
+            var ItemVM = require("js/ItemVM");
             var im = new ItemVM();
             im.load(data.foodItem);
             self.FoodItem(im);
         }
-
     }
 
     function MealVM() {
@@ -29,6 +29,7 @@
         self.ProteinPerServing = ko.observable();
         self.Notes = ko.observable();
         self.MealComponents = ko.observableArray().extend({ deferred: true });
+        self.FoodItemsDrop = ko.observableArray().extend({ deferred: true });
 
         self.CreatedByAdmin = ko.pureComputed(function () {
             if (self.UserID() == "lvolta@umich.edu" || self.UserID() == "jvolta@vtechnologies.com") {
@@ -61,6 +62,9 @@
 
             self.Meals = ko.observableArray();
             self.SearchString = ko.observable();
+            self.DetailMeal = ko.observable();
+            self.EditMeal = ko.observable();
+            self.DeleteMeal = ko.observable();
 
             self.populateData = function (element) {
                 $.ajax({
@@ -82,6 +86,35 @@
                     }
                 });
             }
+
+
+            self.showDetails = function (item) {
+                self.DetailMeal(item);
+                $("#details-modal").modal("show");
+            }
+
+            self.showEdit = function (item) {
+                self.EditMeal(item);
+                $("#edit-modal").modal("show");
+            }
+
+
+            self.GetFoodItemsDropDown = function () {
+                $.ajax({
+                    type: "GET",
+                    url: "Meals/GetFoodItemsDropDown",
+                    success: function (data) {
+                        var array = [];
+                        for (var i = 0; i < data.items.length; i += 1) {
+                            array.push(data.items[i]);
+                        }
+
+                        self.FoodItemsDrop(array);
+                    }
+                });
+            }
+
+
         }
 
        return MealsHandlerVM;

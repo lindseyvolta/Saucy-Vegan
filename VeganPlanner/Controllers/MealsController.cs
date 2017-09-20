@@ -35,6 +35,14 @@ namespace VeganPlanner.Controllers
 
             var meals = from m in _context.Meal
                        .Include(c => c.MealComponents)
+                            .ThenInclude(c => c.FoodItem)
+                            .ThenInclude(c => c.recipe)
+                            .ThenInclude(c => c.Ingredients)
+                            .ThenInclude(c => c.item)
+                       .Include(c => c.MealComponents)
+                            .ThenInclude(c => c.FoodItem)
+                            .ThenInclude(c => c.recipe)
+                            .ThenInclude(c => c.Instructions)
                          .AsNoTracking()
                         where m.UserID == username || m.UserID == "lvolta@umich.edu" || m.UserID == "jvolta@vtechnologies.com"
                         select m;
@@ -43,6 +51,26 @@ namespace VeganPlanner.Controllers
                 meals = meals.Where(s => s.NickName.Contains(searchString));
 
             return Json(new { meals = await meals.OrderBy(x => x.NickName).ToListAsync() });
+        }
+
+        public async Task<IActionResult> GetFoodItemsDropDown()
+        {
+
+            var user = await _userManager.GetUserAsync(User);
+            var username = user.UserName;
+
+            var items = from i in _context.Item
+                        .Include(i => i.recipe)
+                            .ThenInclude(i => i.Ingredients)
+                            .ThenInclude(i => i.item)
+                        .Include(i => i.recipe)
+                            .ThenInclude(i => i.Instructions)
+                        .AsNoTracking()
+                        where i.UserID == username || i.UserID == "lvolta@umich.edu" || i.UserID == "jvolta@vtechnologies.com"
+                        orderby i.Name
+                        select i;
+
+            return Json(new { items = await items.Distinct().ToListAsync() });
         }
 
         // GET: Meals/Details/5
